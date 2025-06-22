@@ -14,7 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spd: 4
   runSpd: 8
-  jumpForce: 5
+  jumpForce: 2
+  gravity: -9.8
   Hp: 100
   hpMax: 100
   stamina: 100
