@@ -11,9 +11,11 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerCam cam;
     public Image StaminaBar;
     public GameObject staminaUI;
+    public Transform playerPivot;
 
     public Vector3 velocity;
     public bool isGrounded;
+    public bool isCrouching;
     public Vector2 InputMove;
     public float timeDelay;
 

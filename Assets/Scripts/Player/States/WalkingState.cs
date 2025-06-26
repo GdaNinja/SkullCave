@@ -25,5 +25,10 @@ public class WalkingState : PlayerBaseState
         {
             player.SwitchState(player.jumpingState);
         }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            player.SwitchState(player.crouchingState);
+            return;
+        }
     }
 }

@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spd: 4
   runSpd: 8
+  crouchSpd: 3
   jumpForce: 2
   gravity: -9.8
   Hp: 100

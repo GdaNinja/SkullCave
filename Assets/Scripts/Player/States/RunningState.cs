@@ -28,6 +28,11 @@ public class RunningState : PlayerBaseState
         {
             player.SwitchState(player.jumpingState);
         }
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            player.SwitchState(player.crouchingState);
+            return;
+        }
     }
     public override void ExitState(PlayerStateManager player)
     {
