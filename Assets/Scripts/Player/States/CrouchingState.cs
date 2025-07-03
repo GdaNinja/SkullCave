@@ -20,6 +20,7 @@ public class CrouchingState : PlayerBaseState
     {
         Vector2 input = player.InputMove;
         player.Move(input,player.getPlayer.crouchSpd);
+        player.Gravity();
         if (Input.GetKeyDown(KeyCode.LeftControl) && player.isCrouching && input == Vector2.zero)
         {
             player.SwitchState(player.idleState);
