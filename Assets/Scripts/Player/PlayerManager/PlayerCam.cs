@@ -15,9 +15,10 @@ public class PlayerCam : MonoBehaviour
     public void camMove()
     {
         Vector3 cameraForward = cam.forward;
-        cameraForward.Normalize();
 
-        // Rotaciona o player para onde a câmera está olhando (no plano XZ)
+        cameraForward.Normalize();
+        cameraForward.y = 0f;
+        // Rotaciona o player para onde a cï¿½mera estï¿½ olhando (no plano XZ)
         transform.forward = cameraForward;
     }
 }
