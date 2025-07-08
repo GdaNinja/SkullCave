@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class FlashLightManager : MonoBehaviour
 {
-    // Start is called before the first frame update
+    public FlashLightSO flashlight;
+    public float energy;
+    public float energyMax;
+    public bool energyEnd;
     void Start()
     {
-        
+        energy = flashlight.energy;
+        energyMax = flashlight.energyMax;
+        energyEnd = flashlight.energyEnd;
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

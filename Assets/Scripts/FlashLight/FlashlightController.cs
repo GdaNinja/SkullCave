@@ -5,12 +5,12 @@ using UnityEngine.UI;
 
 public class FlashlightController : MonoBehaviour
 {
-    public FlashLightSO getFlashlight;
+    public FlashLightManager getFlashlight;
     public AudioSource turnSound;
     public Image energyBar;
     [SerializeField] float delay = 1f; // Tempo entre ligar/desligar
     private Light lightController;
-    private bool canToggle = true; // Impede múltiplos cliques rápidos
+    [SerializeField] bool canToggle = true; // Impede múltiplos cliques rápidos
 
     void Start()
     {
@@ -22,7 +22,11 @@ public class FlashlightController : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0) && canToggle)
         {
+            turnSound.Play(); // Toca o som primeiro
+            if (!getFlashlight.energyEnd)
+            {
             StartCoroutine(ToggleFlashlight());
+            }
         }
         EnergyFlashLight();
     }
@@ -31,7 +35,6 @@ public class FlashlightController : MonoBehaviour
     {
         canToggle = false; // Bloqueia novas trocas durante o delay
 
-        turnSound.Play(); // Toca o som primeiro
         lightController.enabled = !lightController.enabled; // Liga/desliga a luz
         yield return new WaitForSeconds(delay); // Espera o tempo definido
 
@@ -41,9 +44,18 @@ public class FlashlightController : MonoBehaviour
     {
         if (lightController.enabled == true)
         {
-            getFlashlight.energy -= .5f * Time.deltaTime;
+            getFlashlight.energy -= .25f * Time.deltaTime;
+            if (getFlashlight.energy <= 0)
+            {
+                getFlashlight.energyEnd = true;
+                turnSound.Play(); // Toca o som primeiro
+                getFlashlight.energy = 0;
+                lightController.enabled = false;
+            }
+                
             energyBar.fillAmount = getFlashlight.energy / getFlashlight.energyMax;
             Debug.Log(getFlashlight.energy);
+          
         }
     }
 }

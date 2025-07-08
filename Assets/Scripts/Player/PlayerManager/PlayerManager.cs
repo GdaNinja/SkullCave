@@ -8,6 +8,7 @@ public class PlayerManager : MonoBehaviour
     public float spd;
     public float runSpd;
     public float crouchSpd;
+    public float runCrounchSpd;
     public float jumpForce;
     public float gravity;
     public float Hp;
@@ -19,6 +20,7 @@ public class PlayerManager : MonoBehaviour
         spd = player.spd;
         runSpd = player.runSpd;
         crouchSpd = player.crouchSpd;
+        runCrounchSpd = player.runCrounchSpd;
         jumpForce = player.jumpForce;
         gravity = player.gravity;
         Hp = player.Hp;
