@@ -7,18 +7,23 @@ public class JumpingState : PlayerBaseState
     public override PlayerState State => PlayerState.Jumping;
     public override void EnterState(PlayerStateManager player)
     {
-        player.velocity.y = Mathf.Sqrt(player.getPlayer.jumpForce * -2f * player.getPlayer.gravity); // Calcula a força de pulo com base na fórmula de física: v = sqrt(2gh)
+        player.velocity.y = Mathf.Sqrt(player.getPlayer.jumpForce * -2f * player.getPlayer.gravity); // Calcula a forï¿½a de pulo com base na fï¿½rmula de fï¿½sica: v = sqrt(2gh)
     }
     public override void UpdateState(PlayerStateManager player)
     {
         Vector2 input = player.InputMove;
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
         {
+            player.ShowStaminaUI(true);
+                player.getPlayer.stamina -= 10f * Time.deltaTime;
+                if (player.getPlayer.stamina < 0) player.getPlayer.stamina = 0;
+                player.UpdateStaminaBar();
             player.Move(input,player.getPlayer.runSpd);
         }
         else
         {
+            player.StartRechargeStamina(); // inicia recarga
             player.Move(input,player.getPlayer.spd);
         }
         player.Gravity();
@@ -29,7 +34,7 @@ public class JumpingState : PlayerBaseState
             {
                 player.SwitchState(player.idleState);
             }
-            else if (Input.GetKey(KeyCode.LeftShift) && player.getPlayer.stamina > 0)
+            else if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
             {
                 player.SwitchState(player.runningState);
             }

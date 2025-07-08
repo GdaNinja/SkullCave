@@ -12,5 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7980499f2289ab94aba7554624e1fee7, type: 3}
   m_Name: FlashLight
   m_EditorClassIdentifier: 
-  energy: 0
-  energyMax: 0
+  energy: 100
+  energyMax: 100
+  energyEnd: 0

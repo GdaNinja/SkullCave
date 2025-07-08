@@ -13,21 +13,24 @@ public class WalkingState : PlayerBaseState
             player.SwitchState(player.idleState);
             return;
         }
-        if (Input.GetKey(KeyCode.LeftShift) && player.getPlayer.stamina > 0)
+        if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
         {
             player.SwitchState(player.runningState);
             return;
         }
-        player.Move(input, player.getPlayer.spd);
-        player.Gravity();
-        player.CheckGround();
-        if (Input.GetKeyDown(KeyCode.Space) && player.isGrounded)
-        {
-            player.SwitchState(player.jumpingState);
-        }
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
             player.SwitchState(player.crouchingState);
+            return;
+        }
+        
+        player.Move(input, player.getPlayer.spd);
+        player.Gravity();
+        player.CheckGround();
+
+        if (Input.GetKeyDown(KeyCode.Space) && player.isGrounded)
+        {
+            player.SwitchState(player.jumpingState);
             return;
         }
     }

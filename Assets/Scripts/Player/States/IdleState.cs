@@ -14,9 +14,15 @@ public class IdleState : PlayerBaseState
         {
             player.SwitchState(player.walkingState);
         }
-        if(Input.GetKeyDown(KeyCode.Space) && player.isGrounded)
+        if (Input.GetKey(KeyCode.LeftShift) && player.getPlayer.stamina > 0 && input != Vector2.zero)
+        {
+            player.SwitchState(player.runningState);
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Space) && player.isGrounded)
         {
             player.SwitchState(player.jumpingState);
+            return;
         }
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {

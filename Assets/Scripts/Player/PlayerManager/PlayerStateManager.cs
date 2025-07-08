@@ -10,16 +10,21 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerManager getPlayer;
     public PlayerCam cam;
     public Image StaminaBar;
+    public Image StaminaBK;
     public GameObject staminaUI;
     public Transform playerPivot;
 
     public Vector3 velocity;
     public bool isGrounded;
     public bool isCrouching;
+    public bool isRecharging; //A barra de estamina estÃ¡ carregando ou nÃ£o
+    public bool isRunning;
+    public bool isBlinking; //A barra de estamina estÃ¡ piscando ou nÃ£o
     public Vector2 InputMove;
-    public float timeDelay;
-
+    public float timeDelay; // Delay pra poder carregar a barra de estamina
+    public float blinkSpd = 5f;
     Coroutine rechargeCoroutine;
+
     public PlayerBaseState currentState { get; private set; }
 
     [Header("Estados")]
@@ -33,6 +38,9 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.4f;
     [SerializeField] LayerMask groundMask;
+    [SerializeField] Color standardColor = new Color(1, 1, 1, 1);
+    [SerializeField] Color lowStaminaColor = new Color(1, 0, 0, 1);
+
 
 
     void Awake()
@@ -51,7 +59,7 @@ public class PlayerStateManager : MonoBehaviour
     void Update()
     {
         InputMove = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")); //Inputs de ir nos eixos x e z
-        cam.camMove(); //Movimentação da câmera
+        cam.camMove(); //Movimentaï¿½ï¿½o da cï¿½mera
 
         currentState?.UpdateState(this);
     }
@@ -75,42 +83,93 @@ public class PlayerStateManager : MonoBehaviour
     }
     public void CheckGround()
     {
-        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // Usa uma esfera invisível na posição do groundCheck para verificar se o personagem está tocando o chão
+        isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask); // Usa uma esfera invisï¿½vel na posiï¿½ï¿½o do groundCheck para verificar se o personagem estï¿½ tocando o chï¿½o
 
-        // Se estiver no chão e estiver caindo, força o personagem a ficar levemente colado no chão
-        if (isGrounded && velocity.y < 0) velocity.y = -2f; // Garante que o personagem "grude" no chão e não fique flutuando
+        // Se estiver no chï¿½o e estiver caindo, forï¿½a o personagem a ficar levemente colado no chï¿½o
+        if (isGrounded && velocity.y < 0) velocity.y = -2f; // Garante que o personagem "grude" no chï¿½o e nï¿½o fique flutuando
+    }
+    public bool CanRun()
+    {
+        return getPlayer.stamina > 0 && isRunning;
     }
     public void ShowStaminaUI(bool show) => staminaUI.SetActive(show); // Ativa ou desativa a barra de stamina
 
-    public void UpdateStaminaBar() => StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
+    public void UpdateStaminaBar()
+    {
+        StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
+    }
 
     public void StartRechargeStamina()
     {
-        if (rechargeCoroutine != null) StopCoroutine(rechargeCoroutine);
-        rechargeCoroutine = StartCoroutine(RechargeStamina());
+        if (getPlayer.stamina <= 0)
+        {
+            isRunning = false;
+            StaminaBar.color = lowStaminaColor;
+            if (!isBlinking) StartCoroutine(BlinkStaminaBar());
+        }
+        if (!isRecharging)
+        {
+            if (rechargeCoroutine != null) StopCoroutine(rechargeCoroutine);
+            rechargeCoroutine = StartCoroutine(RechargeStamina());
+        }
     }
     IEnumerator RechargeStamina()
     {
+        isRecharging = true;
+
         yield return new WaitForSeconds(timeDelay);
         float timeRecharge = 5;
         while (getPlayer.stamina < getPlayer.staminaMax)
         {
-            if (Input.GetKey(KeyCode.LeftShift)) yield break; // cancela se tentar correr
-
+            if (Input.GetKey(KeyCode.LeftShift))
+            {
+                isRecharging = false;
+                yield break; // cancela se tentar correr
+            }
             getPlayer.stamina += timeRecharge / 3;
             if (getPlayer.stamina > getPlayer.staminaMax) getPlayer.stamina = getPlayer.staminaMax;
             StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
             yield return new WaitForSeconds(.1f);
         }
+        if (!isBlinking && getPlayer.stamina >= getPlayer.staminaMax)
+        {
+            isRunning = true;
+        }
         yield return new WaitForSeconds(timeDelay);
+        isRecharging = false;
         ShowStaminaUI(false);
+    }
+    public IEnumerator BlinkStaminaBar()
+    {
+        isBlinking = true;
+        float timeBlink = 0f;
+        bool fadeOut = true;
+
+        while (getPlayer.stamina < getPlayer.staminaMax)
+        {
+            timeBlink += Time.deltaTime * blinkSpd;
+            Debug.Log(timeBlink);
+            float alpha = fadeOut ? Mathf.Lerp(1f, 0.3f, timeBlink) : Mathf.Lerp(0.3f, 1f, timeBlink); // Ponto de interrogaÃ§Ã£o: if/else. Dois Pontos: Se a condiÃ§Ã£o for verdadeira retorna antes dos dois pontos, senÃ£o sÃ³ depois
+
+            StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, alpha);
+            StaminaBK.color = new Color(StaminaBK.color.r, StaminaBK.color.g, StaminaBK.color.b, alpha);
+
+            if (timeBlink >= 1f)
+            {
+                fadeOut = !fadeOut;
+                timeBlink = 0f;
+            }
+            yield return null;
+        }
+        StaminaBar.color = standardColor;
+        isBlinking = false;
     }
     void OnDrawGizmos()
     {
         // Define a cor da gizmo
         Gizmos.color = Color.red;
 
-        // Desenha uma esfera na posição do groundCheck com o mesmo raio
+        // Desenha uma esfera na posiï¿½ï¿½o do groundCheck com o mesmo raio
         Gizmos.DrawWireSphere(groundCheck.position, groundDistance);
     }
 }

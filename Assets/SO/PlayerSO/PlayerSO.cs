@@ -8,6 +8,7 @@ public class PlayerSO : ScriptableObject
     public float spd;
     public float runSpd;
     public float crouchSpd;
+    public float runCrounchSpd;
     public float jumpForce;
     public float gravity;
     public float Hp;

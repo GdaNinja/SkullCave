@@ -19,18 +19,48 @@ public class CrouchingState : PlayerBaseState
     public override void UpdateState(PlayerStateManager player)
     {
         Vector2 input = player.InputMove;
-        player.Move(input,player.getPlayer.crouchSpd);
+        // Sai do agachado ao apertar LeftControl
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            if (input == Vector2.zero)
+            {
+                player.SwitchState(player.idleState);
+            }
+            else if (Input.GetKey(KeyCode.LeftShift) && player.getPlayer.stamina > 0 && player.isRunning)
+            {
+                player.SwitchState(player.runningState);
+            }
+            else
+            {
+                player.SwitchState(player.walkingState);
+            }
+            return;
+        }
+
+        // Movimentação agachada
+        if (input != Vector2.zero)
+        {
+            if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
+            {
+                player.ShowStaminaUI(true);
+                player.getPlayer.stamina -= 10f * Time.deltaTime;
+                if (player.getPlayer.stamina < 0) player.getPlayer.stamina = 0;
+                player.UpdateStaminaBar();
+                player.Move(input, player.getPlayer.runCrounchSpd);
+            }
+            else
+            {
+                player.StartRechargeStamina(); // inicia recarga
+                player.Move(input, player.getPlayer.crouchSpd);
+            }
+        }
+        else
+        {
+            player.StartRechargeStamina(); // parado: recarrega também
+        }
+
         player.Gravity();
-        if (Input.GetKeyDown(KeyCode.LeftControl) && player.isCrouching && input == Vector2.zero)
-        {
-            player.SwitchState(player.idleState);
-            return;
-        }
-        if (Input.GetKeyDown(KeyCode.LeftControl) && player.isCrouching && input != Vector2.zero)
-        {
-            player.SwitchState(player.walkingState);
-            return;
-        }
+        player.CheckGround();
     }
     public override void ExitState(PlayerStateManager player)
     {
