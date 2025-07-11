@@ -26,7 +26,7 @@ public class CrouchingState : PlayerBaseState
             {
                 player.SwitchState(player.idleState);
             }
-            else if (Input.GetKey(KeyCode.LeftShift) && player.getPlayer.stamina > 0 && player.isRunning)
+            else if (player.CanRun())
             {
                 player.SwitchState(player.runningState);
             }
@@ -40,7 +40,7 @@ public class CrouchingState : PlayerBaseState
         // Movimentação agachada
         if (input != Vector2.zero)
         {
-            if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
+            if (player.CanRun())
             {
                 player.ShowStaminaUI(true);
                 player.getPlayer.stamina -= 10f * Time.deltaTime;

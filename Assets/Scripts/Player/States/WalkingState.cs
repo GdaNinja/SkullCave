@@ -13,7 +13,7 @@ public class WalkingState : PlayerBaseState
             player.SwitchState(player.idleState);
             return;
         }
-        if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
+        if (player.CanRun())
         {
             player.SwitchState(player.runningState);
             return;

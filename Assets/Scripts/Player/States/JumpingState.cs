@@ -13,7 +13,7 @@ public class JumpingState : PlayerBaseState
     {
         Vector2 input = player.InputMove;
 
-        if (Input.GetKey(KeyCode.LeftShift) && player.CanRun())
+        if (player.CanRun())
         {
             player.ShowStaminaUI(true);
                 player.getPlayer.stamina -= 10f * Time.deltaTime;

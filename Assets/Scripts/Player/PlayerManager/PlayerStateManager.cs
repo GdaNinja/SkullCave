@@ -90,7 +90,7 @@ public class PlayerStateManager : MonoBehaviour
     }
     public bool CanRun()
     {
-        return getPlayer.stamina > 0 && isRunning;
+        return Input.GetKey(KeyCode.LeftShift) && getPlayer.stamina > 0 && !isBlinking;
     }
     public void ShowStaminaUI(bool show) => staminaUI.SetActive(show); // Ativa ou desativa a barra de stamina
 
@@ -103,8 +103,8 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (getPlayer.stamina <= 0)
         {
-            isRunning = false;
             StaminaBar.color = lowStaminaColor;
+            StaminaBK.color = lowStaminaColor;
             if (!isBlinking) StartCoroutine(BlinkStaminaBar());
         }
         if (!isRecharging)
@@ -121,7 +121,7 @@ public class PlayerStateManager : MonoBehaviour
         float timeRecharge = 5;
         while (getPlayer.stamina < getPlayer.staminaMax)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
+            if (Input.GetKey(KeyCode.LeftShift) && !isBlinking)
             {
                 isRecharging = false;
                 yield break; // cancela se tentar correr
@@ -131,9 +131,11 @@ public class PlayerStateManager : MonoBehaviour
             StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
             yield return new WaitForSeconds(.1f);
         }
-        if (!isBlinking && getPlayer.stamina >= getPlayer.staminaMax)
+        if (getPlayer.stamina >= getPlayer.staminaMax)
         {
-            isRunning = true;
+            isBlinking = false;
+            StaminaBar.color = standardColor;
+            StaminaBK.color = standardColor;
         }
         yield return new WaitForSeconds(timeDelay);
         isRecharging = false;
@@ -161,8 +163,7 @@ public class PlayerStateManager : MonoBehaviour
             }
             yield return null;
         }
-        StaminaBar.color = standardColor;
-        isBlinking = false;
+
     }
     void OnDrawGizmos()
     {
