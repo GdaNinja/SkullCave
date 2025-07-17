@@ -142802,7 +142802,6 @@ MonoBehaviour:
   getPlayer: {fileID: 1969631855}
   cam: {fileID: 1969631856}
   StaminaBar: {fileID: 1833313863}
-
   StaminaBK: {fileID: 291387201}
   StaminaBorder: {fileID: 134801296}
   staminaUI: {fileID: 1851978468}
@@ -142812,10 +142811,8 @@ MonoBehaviour:
   isCrouching: 0
   isRecharging: 0
   isRunning: 0
-
   isBlinking: 0
   staminaBarActive: 0
-
   InputMove: {x: 0, y: 0}
   timeDelay: 3
   groundCheck: {fileID: 642543940}
