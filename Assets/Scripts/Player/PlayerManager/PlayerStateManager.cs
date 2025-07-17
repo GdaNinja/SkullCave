@@ -92,11 +92,11 @@ public class PlayerStateManager : MonoBehaviour
     }
     public bool CanRun()
     {
-        return getPlayer.stamina > 0 && isRunning;
+        return Input.GetKey(KeyCode.LeftShift) && getPlayer.stamina > 0 && !isBlinking;
     }
     public void ShowStaminaUI(bool show)
     {
-        if (staminaBarActive == show) return; // Se a barra de estamina estiver ativa for verdadeira e show(o fade in/fade out da barra de estamina) também for verdadeira, o códgo para aqui
+        if (staminaBarActive == show) return; // Se a barra de estamina estiver ativa for verdadeira e show(o fade in/fade out da barra de estamina também for verdadeira, o códgo para aqui)
         staminaBarActive = show;
         StartCoroutine(showStamina(show));
     }
@@ -110,7 +110,6 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (getPlayer.stamina <= 0)
         {
-            isRunning = false;
             StaminaBar.color = lowStaminaColor;
             StaminaBorder.color = lowStaminaColor;
             if (!isBlinking) StartCoroutine(BlinkStaminaBar());
@@ -163,22 +162,18 @@ public class PlayerStateManager : MonoBehaviour
         float timeRecharge = 5;
         while (getPlayer.stamina < getPlayer.staminaMax)
         {
-            if (Input.GetKey(KeyCode.LeftShift))
-
-                if (Input.GetKey(KeyCode.LeftShift) && !isBlinking && InputMove != Vector2.zero)
-
-                {
-                    isRecharging = false;
-                    yield break; // cancela se tentar correr
-                }
+            if (Input.GetKey(KeyCode.LeftShift) && !isBlinking && InputMove != Vector2.zero)
+            {
+                isRecharging = false;
+                yield break; // cancela se tentar correr
+            }
             getPlayer.stamina += timeRecharge / 3;
             if (getPlayer.stamina > getPlayer.staminaMax) getPlayer.stamina = getPlayer.staminaMax;
             StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
             yield return new WaitForSeconds(.1f);
         }
-        if (!isBlinking && getPlayer.stamina >= getPlayer.staminaMax)
+        if (getPlayer.stamina >= getPlayer.staminaMax)
         {
-            isRunning = true;
             isBlinking = false;
             StaminaBar.color = standardColor;
             StaminaBorder.color = standardColor;
@@ -209,8 +204,6 @@ public class PlayerStateManager : MonoBehaviour
             }
             yield return null; // Espera um frame pra voltar a agir
         }
-        StaminaBar.color = standardColor;
-        isBlinking = false;
     }
     void OnDrawGizmos()
     {

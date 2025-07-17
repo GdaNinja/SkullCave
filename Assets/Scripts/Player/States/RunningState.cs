@@ -7,15 +7,12 @@ public class RunningState : PlayerBaseState
     public override PlayerState State => PlayerState.Running;
     public override void EnterState(PlayerStateManager player)
     {
-        if (!player.isRunning)
-        {
-            player.isRunning = true;
-        }
+        player.isRunning = true;
     }
     public override void UpdateState(PlayerStateManager player)
     {
         Vector2 input = player.InputMove;
-        if (!Input.GetKey(KeyCode.LeftShift) || player.CanRun())
+        if (!player.CanRun())
         {
             player.SwitchState(player.walkingState);
         }
@@ -48,10 +45,7 @@ public class RunningState : PlayerBaseState
     }
     public override void ExitState(PlayerStateManager player)
     {
-        if (player.isRunning)
-        {
-            player.isRunning = false;
+        player.isRunning = false;
         player.StartRechargeStamina();
-        }
     }
 }
