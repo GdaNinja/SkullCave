@@ -7,5 +7,5 @@ public class FlashLightSO : ScriptableObject
 {
     public float energy;
     public float energyMax;
-    public bool energyEnd;
+    public bool hasEnergy;
 }
