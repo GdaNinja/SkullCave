@@ -142802,11 +142802,9 @@ MonoBehaviour:
   getPlayer: {fileID: 1969631855}
   cam: {fileID: 1969631856}
   StaminaBar: {fileID: 1833313863}
-<<<<<<< Updated upstream
-=======
+
   StaminaBK: {fileID: 291387201}
   StaminaBorder: {fileID: 134801296}
->>>>>>> Stashed changes
   staminaUI: {fileID: 1851978468}
   playerPivot: {fileID: 1969631852}
   velocity: {x: 0, y: 0, z: 0}
@@ -142814,11 +142812,10 @@ MonoBehaviour:
   isCrouching: 0
   isRecharging: 0
   isRunning: 0
-<<<<<<< Updated upstream
-=======
+
   isBlinking: 0
   staminaBarActive: 0
->>>>>>> Stashed changes
+
   InputMove: {x: 0, y: 0}
   timeDelay: 3
   groundCheck: {fileID: 642543940}
