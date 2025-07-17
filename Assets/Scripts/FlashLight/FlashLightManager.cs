@@ -7,12 +7,12 @@ public class FlashLightManager : MonoBehaviour
     public FlashLightSO flashlight;
     public float energy;
     public float energyMax;
-    public bool energyEnd;
+    public bool hasEnergy;
     void Start()
     {
         energy = flashlight.energy;
         energyMax = flashlight.energyMax;
-        energyEnd = flashlight.energyEnd;
+        hasEnergy = flashlight.hasEnergy;
     }
 
 }
