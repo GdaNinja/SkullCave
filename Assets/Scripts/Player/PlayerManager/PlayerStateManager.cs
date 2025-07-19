@@ -179,8 +179,11 @@ public class PlayerStateManager : MonoBehaviour
             StaminaBorder.color = standardColor;
         }
         yield return new WaitForSeconds(timeDelay);
+        if (!CanRun() || getPlayer.stamina >= getPlayer.staminaMax)
+        {
+            ShowStaminaUI(false);
+        }
         isRecharging = false;
-        ShowStaminaUI(false);
     }
     public IEnumerator BlinkStaminaBar()
     {

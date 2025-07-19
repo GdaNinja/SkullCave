@@ -43,7 +43,7 @@ public class CrouchingState : PlayerBaseState
             if (player.CanRun())
             {
                 player.ShowStaminaUI(true);
-                player.getPlayer.stamina -= 10f * Time.deltaTime;
+                player.getPlayer.stamina -= 15f * Time.deltaTime;
                 if (player.getPlayer.stamina < 0) player.getPlayer.stamina = 0;
                 player.UpdateStaminaBar();
                 player.Move(input, player.getPlayer.runCrounchSpd);
