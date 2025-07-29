@@ -14,6 +14,8 @@ public class PlayerStateManager : MonoBehaviour
     public Image StaminaBorder;
     public GameObject staminaUI;
     public Transform playerPivot;
+    public AudioSource walikingSound;
+    public AudioSource runningSound;
 
     public Vector3 velocity;
     #region Váriaveis booleanas
@@ -37,7 +39,6 @@ public class PlayerStateManager : MonoBehaviour
     public RunningState runningState = new RunningState();
     public CrouchingState crouchingState = new CrouchingState();
     public JumpingState jumpingState = new JumpingState();
-    public InteractingState interactingState = new InteractingState();
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.4f;

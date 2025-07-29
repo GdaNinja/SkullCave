@@ -10,7 +10,7 @@ public class PlayerCam : MonoBehaviour
     {
         cam = Camera.main.transform;
         Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false; 
+        Cursor.visible = false;
     }
     public void camMove()
     {

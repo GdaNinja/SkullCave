@@ -2,33 +2,41 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BateryController : MonoBehaviour
+public class BateryController : MonoBehaviour, IInteractable
 {
     public float distanceDetect;
-    public GameObject txtColect;
+    public GameObject txtColectBatery;
     private Transform flashLight;
+    private InteractController controller;
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         flashLight = GameObject.FindGameObjectWithTag("Flashlight").transform;
+        controller = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractController>();
+    }
+    void Start()
+    {
+        txtColectBatery.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (Vector3.Distance(flashLight.position, transform.position) <= distanceDetect)
-        {
-            txtColect.SetActive(true);
-            if (Input.GetKeyDown(KeyCode.E))
-            {
-                flashLight.GetComponent<FlashlightController>().addBatery();
-                txtColect.SetActive(false);
-                Destroy(gameObject);
-            }
-        }
-        else
-        {
-            txtColect.SetActive(false);
-        }
+
+    }
+    public void Interact()
+    {
+        ColectBatery();
+    }
+    public void ShowTxt(bool show)
+    {
+        txtColectBatery.SetActive(show);
+    }
+    public void ColectBatery()
+    {
+        txtColectBatery.SetActive(true);
+        flashLight.GetComponent<FlashlightController>().addBatery();
+        txtColectBatery.SetActive(false);
+        Destroy(gameObject);
     }
 }

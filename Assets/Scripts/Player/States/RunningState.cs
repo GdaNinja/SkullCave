@@ -8,6 +8,7 @@ public class RunningState : PlayerBaseState
     public override void EnterState(PlayerStateManager player)
     {
         player.isRunning = true;
+        player.runningSound.Play();
     }
     public override void UpdateState(PlayerStateManager player)
     {
@@ -47,5 +48,6 @@ public class RunningState : PlayerBaseState
     {
         player.isRunning = false;
         player.StartRechargeStamina();
+        player.runningSound.Stop();
     }
 }

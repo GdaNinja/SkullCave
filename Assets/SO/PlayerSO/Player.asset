@@ -12,11 +12,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b20fcbe54fcc25c4d97d035a1d3d287f, type: 3}
   m_Name: Player
   m_EditorClassIdentifier: 
-  spd: 4
-  runSpd: 8
-  crouchSpd: 3
-  runCrounchSpd: 6
-  jumpForce: 2
+  spd: 2
+  runSpd: 6
+  crouchSpd: 1.5
+  runCrounchSpd: 4
+  jumpForce: 1
   gravity: -9.8
   Hp: 100
   hpMax: 100
