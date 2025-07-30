@@ -16,6 +16,7 @@ public class PlayerStateManager : MonoBehaviour
     public Transform playerPivot;
     public AudioSource walikingSound;
     public AudioSource runningSound;
+    public Animator animator;
 
     public Vector3 velocity;
     #region Váriaveis booleanas
@@ -50,6 +51,8 @@ public class PlayerStateManager : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         cam = GetComponent<PlayerCam>();
+        animator = GetComponentInChildren<Animator>();
+        
     }
 
     void Start()
@@ -63,6 +66,9 @@ public class PlayerStateManager : MonoBehaviour
     {
         InputMove = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical")); //Inputs de ir nos eixos x e z
         cam.camMove(); //Movimenta��o da c�mera
+        float speed = InputMove.magnitude; // de 0 a 1 com base no input
+        animator.SetFloat("Speed", speed);
+        animator.SetBool("isRunning", isRunning);
 
         currentState?.UpdateState(this);
     }
@@ -208,6 +214,10 @@ public class PlayerStateManager : MonoBehaviour
             }
             yield return null; // Espera um frame pra voltar a agir
         }
+    }
+    void OnTriggerStay(Collider other)
+    {
+
     }
     void OnDrawGizmos()
     {
