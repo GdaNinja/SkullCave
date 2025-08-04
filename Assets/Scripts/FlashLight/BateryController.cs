@@ -19,11 +19,6 @@ public class BateryController : MonoBehaviour, IInteractable
         txtColectBatery.SetActive(false);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     public void Interact()
     {
         ColectBatery();

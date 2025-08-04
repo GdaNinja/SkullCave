@@ -17,6 +17,7 @@ public class PlayerStateManager : MonoBehaviour
     public AudioSource walikingSound;
     public AudioSource runningSound;
     public Animator animator;
+    public Animator staminaAnimator;
 
     public Vector3 velocity;
     #region Váriaveis booleanas
@@ -129,36 +130,17 @@ public class PlayerStateManager : MonoBehaviour
     }
     IEnumerator showStamina(bool show)
     {
-        float duration = 1f; // Tempo total do fade
-        float time = 0f;
-
-        // Captura os valores de alpha iniciais
-        float startAlpha = show ? 0f : 1f;
-        float endAlpha = show ? 1f : 0f;
-
-        // Se for mostrar, ativa antes de começar o fade in
-        if (show) staminaUI.SetActive(true);
-
-        while (time < duration)
+        if (show)
         {
-            time += Time.deltaTime;
-            float alpha = Mathf.Lerp(startAlpha, endAlpha, time / duration);
-
-            StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, alpha);
-            StaminaBK.color = new Color(StaminaBK.color.r, StaminaBK.color.g, StaminaBK.color.b, alpha);
-            StaminaBorder.color = new Color(StaminaBorder.color.r, StaminaBorder.color.g, StaminaBorder.color.b, alpha);
-
-            yield return null;
+            staminaUI.SetActive(true);
+            staminaAnimator.Play("StaminaFadeIn");
         }
-
-        // Garante valor final preciso
-        float finalAlpha = endAlpha;
-        StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, finalAlpha);
-        StaminaBK.color = new Color(StaminaBK.color.r, StaminaBK.color.g, StaminaBK.color.b, finalAlpha);
-        StaminaBorder.color = new Color(StaminaBorder.color.r, StaminaBorder.color.g, StaminaBorder.color.b, finalAlpha);
-
-        // Se for esconder, desativa depois do fade out
-        if (!show) staminaUI.SetActive(false);
+        else
+        {
+            staminaAnimator.Play("StaminaFadeOut");
+            yield return new WaitForSeconds(5);
+            staminaUI.SetActive(false);
+        }
 
     }
     IEnumerator RechargeStamina()
@@ -214,10 +196,6 @@ public class PlayerStateManager : MonoBehaviour
             }
             yield return null; // Espera um frame pra voltar a agir
         }
-    }
-    void OnTriggerStay(Collider other)
-    {
-
     }
     void OnDrawGizmos()
     {
