@@ -9,6 +9,7 @@ public class PlayerStateManager : MonoBehaviour
     public CharacterController controller;
     public PlayerManager getPlayer;
     public PlayerCam cam;
+    public Transform camPivot;
     public Image StaminaBar;
     public Image StaminaBK;
     public Image StaminaBorder;
@@ -32,6 +33,7 @@ public class PlayerStateManager : MonoBehaviour
     public float timeDelay; // Delay pra poder carregar a barra de estamina
     public float blinkSpd;
     Coroutine rechargeCoroutine;
+    Coroutine staminaCoroutine;
 
     public PlayerBaseState currentState { get; private set; }
 
@@ -106,7 +108,11 @@ public class PlayerStateManager : MonoBehaviour
     {
         if (staminaBarActive == show) return; // Se a barra de estamina estiver ativa for verdadeira e show(o fade in/fade out da barra de estamina também for verdadeira, o códgo para aqui)
         staminaBarActive = show;
-        StartCoroutine(showStamina(show));
+        if (staminaCoroutine != null)
+        {
+            StopCoroutine(staminaCoroutine);
+        }
+        staminaCoroutine = StartCoroutine(showStamina(show));
     }
 
     public void UpdateStaminaBar()
@@ -138,10 +144,9 @@ public class PlayerStateManager : MonoBehaviour
         else
         {
             staminaAnimator.Play("StaminaFadeOut");
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(1);
             staminaUI.SetActive(false);
         }
-
     }
     IEnumerator RechargeStamina()
     {
@@ -177,23 +182,9 @@ public class PlayerStateManager : MonoBehaviour
     public IEnumerator BlinkStaminaBar()
     {
         isBlinking = true;
-        float timeBlink = 0f;
-        bool fadeOut = true;
-
         while (getPlayer.stamina < getPlayer.staminaMax)
         {
-            timeBlink += Time.deltaTime * blinkSpd;
-            Debug.Log(timeBlink);
-            float alpha = fadeOut ? Mathf.Lerp(1f, 0.3f, timeBlink) : Mathf.Lerp(0.3f, 1f, timeBlink); // Ponto de interrogação: if/else. Dois Pontos: Se a condição for verdadeira retorna antes dos dois pontos, senão só depois
-
-            StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, alpha);
-            StaminaBorder.color = new Color(StaminaBorder.color.r, StaminaBorder.color.g, StaminaBorder.color.b, alpha);
-
-            if (timeBlink >= 1f)
-            {
-                fadeOut = !fadeOut;
-                timeBlink = 0f;
-            }
+            staminaAnimator.Play("StaminaBlink");
             yield return null; // Espera um frame pra voltar a agir
         }
     }

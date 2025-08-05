@@ -709,7 +709,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e1ac525ad58dcab48b1953589edf9a8c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.6149428
+      value: -1.51
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: e1ac525ad58dcab48b1953589edf9a8c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -78367,7 +78367,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 1.7, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -85480,7 +85480,7 @@ Light:
   m_Color: {r: 1, g: 0.9901519, b: 0.8207547, a: 0.2509804}
   m_Intensity: 1
   m_Range: 15
-  m_SpotAngle: 45
+  m_SpotAngle: 50
   m_InnerSpotAngle: 1
   m_CookieSize: 10
   m_Shadows:
@@ -97773,7 +97773,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1969631851}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0.8900001, y: 0.55, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -97783,7 +97783,7 @@ Transform:
   - {fileID: 642543940}
   - {fileID: 410746630}
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!143 &1969631853
 CharacterController:
   m_ObjectHideFlags: 0
@@ -97825,6 +97825,7 @@ MonoBehaviour:
   controller: {fileID: 1969631853}
   getPlayer: {fileID: 1969631855}
   cam: {fileID: 1969631856}
+  camPivot: {fileID: 1033788620}
   StaminaBar: {fileID: 1833313863}
   StaminaBK: {fileID: 291387201}
   StaminaBorder: {fileID: 170960050}

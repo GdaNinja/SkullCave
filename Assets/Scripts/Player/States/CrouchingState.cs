@@ -19,8 +19,11 @@ public class CrouchingState : PlayerBaseState
     public override void UpdateState(PlayerStateManager player)
     {
         Vector2 input = player.InputMove;
+        Vector3 rayOrigin = player.camPivot.position;
+        float checkDistance = 1.2f;
+        bool canStandUp = !Physics.Raycast(rayOrigin, player.camPivot.up, checkDistance);
         // Sai do agachado ao apertar LeftControl
-        if (Input.GetKeyDown(KeyCode.LeftControl))
+        if (canStandUp && Input.GetKeyDown(KeyCode.LeftControl))
         {
             if (input == Vector2.zero)
             {
@@ -61,6 +64,7 @@ public class CrouchingState : PlayerBaseState
 
         player.Gravity();
         player.CheckGround();
+         Debug.DrawRay(rayOrigin, Vector3.up * checkDistance, Color.red);
     }
     public override void ExitState(PlayerStateManager player)
     {

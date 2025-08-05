@@ -26,18 +26,16 @@ public class NpcInteracting : MonoBehaviour, IInteractable
         {
             DialogueStart();
         }
-        if (Input.GetButtonDown("Fire1"))
+        else if (dialogueTxt.text == dialogueLines[index])
         {
-            if (dialogueTxt.text == dialogueLines[index])
-            {
-                NextDialogue();
-            }
-            else
-            {
-                StopAllCoroutines();
-                dialogueTxt.text = dialogueLines[index];
-            }
+            NextDialogue();
         }
+        else
+        {
+            StopAllCoroutines();
+            dialogueTxt.text = dialogueLines[index];
+        }
+
     }
     public void ShowTxt(bool show)
     {
