@@ -10,6 +10,7 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerManager getPlayer;
     public PlayerCam cam;
     public Transform camPivot;
+    public Transform npcTarget;
     public Image StaminaBar;
     public Image StaminaBK;
     public Image StaminaBorder;
@@ -28,6 +29,7 @@ public class PlayerStateManager : MonoBehaviour
     public bool isRunning;
     public bool isBlinking; //A barra de estamina está piscando ou não
     public bool staminaBarActive;
+    public bool isInteracting;
     #endregion
     public Vector2 InputMove;
     public float timeDelay; // Delay pra poder carregar a barra de estamina
@@ -43,6 +45,7 @@ public class PlayerStateManager : MonoBehaviour
     public RunningState runningState = new RunningState();
     public CrouchingState crouchingState = new CrouchingState();
     public JumpingState jumpingState = new JumpingState();
+    public InteractingState interactingState = new InteractingState();
 
     [SerializeField] Transform groundCheck;
     [SerializeField] float groundDistance = 0.4f;
@@ -55,7 +58,6 @@ public class PlayerStateManager : MonoBehaviour
         controller = GetComponent<CharacterController>();
         cam = GetComponent<PlayerCam>();
         animator = GetComponentInChildren<Animator>();
-        
     }
 
     void Start()
@@ -182,7 +184,7 @@ public class PlayerStateManager : MonoBehaviour
     public IEnumerator BlinkStaminaBar()
     {
         isBlinking = true;
-        while (getPlayer.stamina < getPlayer.staminaMax)
+        if (getPlayer.stamina < getPlayer.staminaMax)
         {
             staminaAnimator.Play("StaminaBlink");
             yield return null; // Espera um frame pra voltar a agir

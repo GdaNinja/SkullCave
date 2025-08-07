@@ -25,7 +25,6 @@ public class InteractController : MonoBehaviour
     void Update()
     {
         Interact();
-
         // Desenha uma linha azul na cena representando o raycast de interação (só visível no editor)
         Debug.DrawLine(cam.transform.position, cam.transform.position + cam.transform.forward * distanceDetect, Color.blue);
     }
@@ -62,6 +61,15 @@ public class InteractController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.E))
             {
                 obj.Interact();
+                // Checa se a interação deve travar o jogador (ex: diálogos)
+                if (obj is IExtendedInteractable)
+                {
+                    PlayerStateManager player = FindObjectOfType<PlayerStateManager>();
+                    if (player != null)
+                    {
+                        player.SwitchState(player.interactingState);
+                    }
+                }
             }
         }
         else

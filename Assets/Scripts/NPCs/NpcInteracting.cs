@@ -4,7 +4,7 @@ using UnityEngine;
 using TMPro;
 using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
 
-public class NpcInteracting : MonoBehaviour, IInteractable
+public class NpcInteracting : MonoBehaviour, IExtendedInteractable
 {
     public GameObject txtNpc;
     [SerializeField, TextArea(4, 6)] string[] dialogueLines;
@@ -21,7 +21,7 @@ public class NpcInteracting : MonoBehaviour, IInteractable
     }
 
     public void Interact()
-    {
+    {   
         if (!dialogueStart)
         {
             DialogueStart();
@@ -45,7 +45,6 @@ public class NpcInteracting : MonoBehaviour, IInteractable
     {
         dialogueStart = true;
         dialoguePanel.SetActive(true);
-        txtNpc.SetActive(false);
         index = 0;
         StartCoroutine(ShowLines());
     }
@@ -58,9 +57,10 @@ public class NpcInteracting : MonoBehaviour, IInteractable
         }
         else
         {
+            PlayerStateManager player = FindObjectOfType<PlayerStateManager>();
             dialogueStart = false;
             dialoguePanel.SetActive(false);
-            txtNpc.SetActive(true);
+            player.isInteracting = false;
         }
     }
     IEnumerator ShowLines()
