@@ -1626,7 +1626,6 @@ MonoBehaviour:
     se recusa a aceitar.\r\n"
   dialoguePanel: {fileID: 434541359}
   dialogueTxt: {fileID: 596837137}
-  npcTarget: {fileID: 309543155}
 --- !u!1001 &315948345
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -97791,6 +97790,7 @@ MonoBehaviour:
   getPlayer: {fileID: 1969631855}
   cam: {fileID: 1969631856}
   camPivot: {fileID: 1033788620}
+  npcTarget: {fileID: 309543155}
   StaminaBar: {fileID: 1833313863}
   StaminaBK: {fileID: 291387201}
   StaminaBorder: {fileID: 170960050}
