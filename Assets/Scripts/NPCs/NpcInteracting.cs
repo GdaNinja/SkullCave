@@ -12,7 +12,7 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
     [SerializeField] TMP_Text dialogueTxt;
     private int index;
     private bool dialogueStart;
-    private float timingChar = 0.1f;
+    private float timingChar = 0.05f;
 
     void Start()
     {
@@ -21,7 +21,7 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
     }
 
     public void Interact()
-    {   
+    {
         if (!dialogueStart)
         {
             DialogueStart();

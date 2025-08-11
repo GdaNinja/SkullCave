@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cinemachine;
+
 
 public class PlayerStateManager : MonoBehaviour
 {
@@ -9,6 +11,7 @@ public class PlayerStateManager : MonoBehaviour
     public CharacterController controller;
     public PlayerManager getPlayer;
     public PlayerCam cam;
+    public camInteracting camController;
     public Transform camPivot;
     public Transform npcTarget;
     public Image StaminaBar;
@@ -58,6 +61,7 @@ public class PlayerStateManager : MonoBehaviour
         controller = GetComponent<CharacterController>();
         cam = GetComponent<PlayerCam>();
         animator = GetComponentInChildren<Animator>();
+        camController = GetComponent<camInteracting>();
     }
 
     void Start()
@@ -128,6 +132,7 @@ public class PlayerStateManager : MonoBehaviour
         {
             StaminaBar.color = lowStaminaColor;
             StaminaBorder.color = lowStaminaColor;
+            staminaAnimator.enabled = false;
             if (!isBlinking) StartCoroutine(BlinkStaminaBar());
         }
         if (!isRecharging)
@@ -175,7 +180,7 @@ public class PlayerStateManager : MonoBehaviour
             StaminaBorder.color = standardColor;
         }
         yield return new WaitForSeconds(timeDelay);
-        if (!CanRun() || getPlayer.stamina >= getPlayer.staminaMax)
+        if (!CanRun() && getPlayer.stamina >= getPlayer.staminaMax)
         {
             ShowStaminaUI(false);
         }
@@ -184,11 +189,28 @@ public class PlayerStateManager : MonoBehaviour
     public IEnumerator BlinkStaminaBar()
     {
         isBlinking = true;
-        if (getPlayer.stamina < getPlayer.staminaMax)
+        float timeBlink = 0f;
+        bool fadeOut = true;
+
+        while (getPlayer.stamina < getPlayer.staminaMax)
         {
-            staminaAnimator.Play("StaminaBlink");
+            timeBlink += Time.deltaTime * blinkSpd;
+            Debug.Log(timeBlink);
+            float alpha = fadeOut ? Mathf.Lerp(1f, 0.3f, timeBlink) : Mathf.Lerp(0.3f, 1f, timeBlink); // Ponto de interrogação: if/else. Dois Pontos: Se a condição for verdadeira retorna antes dos dois pontos, senão só depois
+
+            StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, alpha);
+            StaminaBorder.color = new Color(StaminaBorder.color.r, StaminaBorder.color.g, StaminaBorder.color.b, alpha);
+
+            if (timeBlink >= 1f)
+            {
+                fadeOut = !fadeOut;
+                timeBlink = 0f;
+            }
             yield return null; // Espera um frame pra voltar a agir
         }
+        StaminaBar.color = standardColor;
+        isBlinking = false;
+        staminaAnimator.enabled = true;
     }
     void OnDrawGizmos()
     {
