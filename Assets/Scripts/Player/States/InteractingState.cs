@@ -10,9 +10,8 @@ public class InteractingState : PlayerBaseState
     {
         player.isInteracting = true;
         player.velocity = Vector3.zero;
-        if (player.camController != null && player.npcTarget != null)
+        if (player.camController != null)
         {
-            player.camController.FocusOnNPC(player.npcTarget);
             player.camController.LockCamera();
         }
     }

@@ -57,7 +57,7 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
         }
         else
         {
-            PlayerStateManager player = FindObjectOfType<PlayerStateManager>();
+            PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
             dialogueStart = false;
             dialoguePanel.SetActive(false);
             player.isInteracting = false;

@@ -64,7 +64,7 @@ public class InteractController : MonoBehaviour
                 // Checa se a interação deve travar o jogador (ex: diálogos)
                 if (obj is IExtendedInteractable)
                 {
-                    PlayerStateManager player = FindObjectOfType<PlayerStateManager>();
+                    PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
                     if (player != null)
                     {
                         player.SwitchState(player.interactingState);

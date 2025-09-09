@@ -13,7 +13,6 @@ public class PlayerStateManager : MonoBehaviour
     public PlayerCam cam;
     public camInteracting camController;
     public Transform camPivot;
-    public Transform npcTarget;
     public Image StaminaBar;
     public Image StaminaBK;
     public Image StaminaBorder;

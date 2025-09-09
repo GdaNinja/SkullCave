@@ -7,6 +7,7 @@ using UnityEngine.UI;
 public class FlashlightController : MonoBehaviour
 {
     public FlashLightManager getFlashlight;
+    PlayerStateManager player;
     public AudioSource turnSound;
     public GameObject Bar;
     public Image energyBarFill;
@@ -22,6 +23,7 @@ public class FlashlightController : MonoBehaviour
     void Awake()
     {
         lightController = GetComponentInChildren<Light>();
+        player = FindFirstObjectByType<PlayerStateManager>();
     }
     void Start()
     {
@@ -80,7 +82,10 @@ public class FlashlightController : MonoBehaviour
     {
         canToggle = false; // Bloqueia novas trocas durante o delay
         yield return new WaitForSeconds(0.4f); // Espera o tempo definido
-        lightController.enabled = !lightController.enabled; // Liga/desliga a luz
+        if (!player.isInteracting)
+        {
+            lightController.enabled = !lightController.enabled; // Liga/desliga a luz
+        }
         yield return new WaitForSeconds(delay); // Espera o tempo definido
 
         canToggle = true; // Libera novamente o clique

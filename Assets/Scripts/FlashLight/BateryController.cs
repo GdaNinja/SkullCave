@@ -7,12 +7,11 @@ public class BateryController : MonoBehaviour, IInteractable
     public float distanceDetect;
     public GameObject txtColectBatery;
     private Transform flashLight;
-    private InteractController controller;
+
     // Start is called before the first frame update
     void Awake()
     {
         flashLight = GameObject.FindGameObjectWithTag("Flashlight").transform;
-        controller = GameObject.FindGameObjectWithTag("Player").GetComponent<InteractController>();
     }
     void Start()
     {

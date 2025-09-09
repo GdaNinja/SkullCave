@@ -16,11 +16,6 @@ public class camInteracting : MonoBehaviour
     {
         defaultLookAt = vcam.LookAt;
     }
-    public void FocusOnNPC(Transform npcTarget)
-    {
-        vcam.LookAt = npcTarget; // olha para o NPC
-    }
-
     public void RestoreCamera()
     {
         vcam.LookAt = defaultLookAt;

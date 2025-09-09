@@ -1,34 +1,46 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 {
+    [SerializeField] private GameObject pinturaCompleta;
     public GameObject txtInteract;
-    Vector3 mousePosition;
+    PlayerStateManager player;
+    public bool puzzleActive = false; // controla se o puzzle está ativo
+
     void Start()
     {
         txtInteract.SetActive(false);
+        player = FindFirstObjectByType<PlayerStateManager>();
     }
     public void Interact()
     {
         Cursor.lockState = CursorLockMode.Confined;
         Cursor.visible = true;
+        puzzleActive = true;
+        if (player.isInteracting == true && Input.GetKeyDown(KeyCode.E))
+        {
+            exitInteract();
+        }
     }
     public void ShowTxt(bool show)
     {
         txtInteract.SetActive(show);
     }
-    private Vector3 GetMousePos()
+    public void exitInteract()
     {
-        return Camera.main.WorldToScreenPoint(transform.position);
+        puzzleActive = false;
+        player.isInteracting = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
-    void OnMouseDown()
+    public void OnPuzzleComplete()
     {
-        mousePosition = Input.mousePosition - GetMousePos();
-    }
-    void OnMouseDrag()
-    {
-        transform.position = Camera.main.ScreenToWorldPoint(Input.mousePosition - mousePosition);
+        if (pinturaCompleta != null)
+            pinturaCompleta.SetActive(true);
+
+        exitInteract(); // volta o controle ao player
     }
 }
