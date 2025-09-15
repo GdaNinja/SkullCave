@@ -1,46 +1,68 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Tilemaps;
+using UnityEngine.SceneManagement;
 
 public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 {
     [SerializeField] private GameObject pinturaCompleta;
     public GameObject txtInteract;
-    PlayerStateManager player;
-    public bool puzzleActive = false; // controla se o puzzle está ativo
+    public bool puzzleActive;
+    public bool puzzleCompleted;
 
     void Start()
     {
         txtInteract.SetActive(false);
-        player = FindFirstObjectByType<PlayerStateManager>();
+        if (pinturaCompleta != null)
+            pinturaCompleta.SetActive(false);
     }
+
     public void Interact()
     {
-        Cursor.lockState = CursorLockMode.Confined;
-        Cursor.visible = true;
-        puzzleActive = true;
-        if (player.isInteracting == true && Input.GetKeyDown(KeyCode.E))
+        if (!puzzleActive) // só abre se não estiver aberto
         {
-            exitInteract();
+            puzzleActive = true;
+            // ativa puzzle
+            Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = true;
+            SceneManager.LoadSceneAsync("Puzzle", LoadSceneMode.Additive);
         }
     }
+
+    void Update()
+    {
+        if (puzzleActive && !puzzleCompleted)
+        {
+            // tecla para sair sem terminar
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                exitInteract();
+            }
+        }
+    }
+
     public void ShowTxt(bool show)
     {
         txtInteract.SetActive(show);
     }
+
     public void exitInteract()
     {
-        puzzleActive = false;
+        PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
         player.isInteracting = false;
+        puzzleActive = false;
+        SceneManager.UnloadSceneAsync("Puzzle");
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
+
     public void OnPuzzleComplete()
     {
+        puzzleCompleted = true;
+
         if (pinturaCompleta != null)
             pinturaCompleta.SetActive(true);
 
-        exitInteract(); // volta o controle ao player
+        exitInteract(); // fecha o puzzle e volta ao jogo
     }
 }
