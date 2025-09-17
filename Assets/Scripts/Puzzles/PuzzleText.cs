@@ -15,6 +15,7 @@ public class PuzzleText : MonoBehaviour
     {
         textStart = true;
         textContinue.SetActive(false);
+        TextStart();
     }
 
     // Update is called once per frame
@@ -22,15 +23,16 @@ public class PuzzleText : MonoBehaviour
     {
         if (!textStart)
         {
-            textContinue.SetActive(false);
             TextStart();
         }
         else if (textTxt.text == textLines[index])
         {
+            textContinue.SetActive(true);
             if (Input.GetKeyDown(KeyCode.E))
             {
                 textContinue.SetActive(true);
                 NextText();
+                textContinue.SetActive(false);
             }
         }
         else
@@ -62,7 +64,7 @@ public class PuzzleText : MonoBehaviour
         }
     }
     IEnumerator ShowLines()
-    { 
+    {
         textTxt.text = string.Empty;
         foreach (char ch in textLines[index])
         {
