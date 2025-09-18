@@ -71,6 +71,14 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
         // descarrega a cena do puzzle (se estiver carregada)
         SceneManager.UnloadSceneAsync("Puzzle");
 
+    }
+    public void OnPuzzleComplete()
+    {
+        puzzleCompleted = true;
 
+        if (pinturaCompleta != null)
+            pinturaCompleta.SetActive(true);
+
+        exitInteract(); // fecha o puzzle e volta ao jogo
     }
 }
