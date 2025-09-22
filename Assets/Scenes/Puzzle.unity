@@ -148,14 +148,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0.33435416, y: 0.5}
-  m_AnchoredPosition: {x: -0.5, y: 0.000061035156}
-  m_SizeDelta: {x: -3, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -643.5, y: -270}
+  m_SizeDelta: {x: -1287, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &20407212
 MonoBehaviour:
@@ -207,8 +207,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359fecea22d15f4ebab307cf5b359ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
-  pieceID: 5
-  correctPosition: 4
+  pieceID: 4
+  correctPosition: 0
   pieceImage: {fileID: 20407212}
 --- !u!1 &45144541
 GameObject:
@@ -239,14 +239,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0.5}
-  m_AnchorMax: {x: 0.33435416, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: -2, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -643, y: 270}
+  m_SizeDelta: {x: -1286, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &45144543
 MonoBehaviour:
@@ -298,8 +298,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359fecea22d15f4ebab307cf5b359ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
-  pieceID: 1
-  correctPosition: 1
+  pieceID: 2
+  correctPosition: 0
   pieceImage: {fileID: 45144543}
 --- !u!1 &80707722
 GameObject:
@@ -656,7 +656,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &301175517
 RectTransform:
   m_ObjectHideFlags: 0
@@ -748,7 +748,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.13785417, y: 0.30800003}
   m_AnchorMax: {x: 0.86560416, y: 0.957}
-  m_AnchoredPosition: {x: -3.3201294, y: 4}
+  m_AnchoredPosition: {x: -3.3200684, y: 4}
   m_SizeDelta: {x: 2, y: -1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &358314084
@@ -880,14 +880,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.6633959, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 2.5, y: 0}
-  m_SizeDelta: {x: -7, y: 0}
+  m_AnchoredPosition: {x: 633.5, y: 270}
+  m_SizeDelta: {x: -1267, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &489932529
 MonoBehaviour:
@@ -998,8 +998,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
   pieceID: 5
-  correctPosition: 5
-  pieceImage: {fileID: 0}
+  correctPosition: 0
+  pieceImage: {fileID: 489932529}
 --- !u!1 &773888053
 GameObject:
   m_ObjectHideFlags: 0
@@ -1029,14 +1029,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.33435416, y: 0}
-  m_AnchorMax: {x: 0.6633959, y: 0.5}
-  m_AnchoredPosition: {x: 2, y: 0}
-  m_SizeDelta: {x: 4, y: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -7.5, y: -270}
+  m_SizeDelta: {x: -1283, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &773888055
 MonoBehaviour:
@@ -1088,7 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359fecea22d15f4ebab307cf5b359ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
-  pieceID: 0
+  pieceID: 3
   correctPosition: 0
   pieceImage: {fileID: 0}
 --- !u!1 &1064823541
@@ -1121,14 +1121,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.6633959, y: 0}
-  m_AnchorMax: {x: 1, y: 0.5}
-  m_AnchoredPosition: {x: 2.5, y: -0.49993896}
-  m_SizeDelta: {x: -7, y: -1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 633.5, y: -270}
+  m_SizeDelta: {x: -1267, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!212 &1064823543
 SpriteRenderer:
@@ -1239,7 +1239,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
   pieceID: 0
-  correctPosition: 2
+  correctPosition: 0
   pieceImage: {fileID: 1064823544}
 --- !u!1 &1108482187
 GameObject:
@@ -1272,10 +1272,10 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 45144542}
-  - {fileID: 20407211}
-  - {fileID: 773888054}
   - {fileID: 1205282332}
+  - {fileID: 45144542}
+  - {fileID: 773888054}
+  - {fileID: 20407211}
   - {fileID: 489932528}
   - {fileID: 1064823542}
   m_Father: {fileID: 80707726}
@@ -1335,21 +1335,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89978ad84f9394e4f8b6148a9408f5ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzleManagerUI
-  gridWidth: 3
-  gridHeight: 2
-  pieceSize: 300
-  pieceSpacing: 10
   puzzlePieces:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  puzzleContainer: {fileID: 1108482188}
-  audioSource: {fileID: 0}
-  movePieceSound: {fileID: 0}
-  completePuzzleSound: {fileID: 0}
+  - {fileID: 1064823546}
+  - {fileID: 1205282335}
+  - {fileID: 45144545}
+  - {fileID: 773888057}
+  - {fileID: 20407214}
+  - {fileID: 489932532}
   completePanel: {fileID: 301175516}
 --- !u!1 &1205282331
 GameObject:
@@ -1380,14 +1372,14 @@ RectTransform:
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 1108482188}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.33435416, y: 0.5}
-  m_AnchorMax: {x: 0.6633959, y: 1}
-  m_AnchoredPosition: {x: 2.5, y: -0.5}
-  m_SizeDelta: {x: 7, y: -1}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -9.5, y: 270}
+  m_SizeDelta: {x: -1287, y: -540}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1205282333
 MonoBehaviour:
@@ -1439,9 +1431,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0359fecea22d15f4ebab307cf5b359ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PuzzlePieceUI
-  pieceID: 0
+  pieceID: 1
   correctPosition: 0
-  pieceImage: {fileID: 0}
+  pieceImage: {fileID: 1205282333}
 --- !u!1 &1550219783
 GameObject:
   m_ObjectHideFlags: 0

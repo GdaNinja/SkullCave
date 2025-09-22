@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 {
-    [SerializeField] private GameObject pinturaCompleta;
+    [SerializeField] private GameObject pinturaCompleta, imgPintura, gameObjectToEnable, smokeEffect; 
     public GameObject txtInteract;
 
 
@@ -13,16 +13,15 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
     [HideInInspector] public bool puzzleCompleted; // já terminou antes?
 
 
-    // salvo entre aberturas: cada posição armazena o índice do sprite que está na célula
-    // use -1 para indicar espaço vazio
-    public int[] savedPuzzleState;
-
-
     void Start()
     {
         txtInteract.SetActive(false);
         if (pinturaCompleta != null)
             pinturaCompleta.SetActive(false);
+        if (gameObjectToEnable != null)
+            gameObjectToEnable.SetActive(false);
+        if (smokeEffect != null)
+            smokeEffect.SetActive(false);
     }
 
 
@@ -65,8 +64,8 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
     {
         PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
         if (player != null) player.isInteracting = false;
-
-
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         puzzleActive = false;
         // descarrega a cena do puzzle (se estiver carregada)
         SceneManager.UnloadSceneAsync("Puzzle");
@@ -78,7 +77,12 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 
         if (pinturaCompleta != null)
             pinturaCompleta.SetActive(true);
-
+            if (imgPintura != null)
+            imgPintura.SetActive(false);
+            if (gameObjectToEnable != null)
+            gameObjectToEnable.SetActive(true);
+            if (smokeEffect != null)
+            smokeEffect.SetActive(true);
         exitInteract(); // fecha o puzzle e volta ao jogo
     }
 }

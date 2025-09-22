@@ -1,4 +1,3 @@
-// 2. PuzzleManagerUI.cs - Gerencia todo o sistema do puzzle em UI
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,314 +5,384 @@ using UnityEngine.UI;
 
 public class PuzzleManagerUI : MonoBehaviour
 {
-    [Header("Configura��es do Grid")]
-    public int gridWidth = 3;
-    public int gridHeight = 2;
-    public float pieceSize = 300f; // tamanho de cada pe�a em pixels
-    public float pieceSpacing = 10f; // espa�o entre pe�as
-
-    [Header("Pe�as do Puzzle")]
-    public PuzzlePieceUI[] puzzlePieces; // array com todas as pe�as (incluindo o espa�o vazio)
-
-    [Header("Container")]
-    public RectTransform puzzleContainer; // GameObject pai que cont�m todas as pe�as
-
-    [Header("Audio")]
-    public AudioSource audioSource;
-    public AudioClip movePieceSound;
-    public AudioClip completePuzzleSound;
+    [Header("Peças do Puzzle")]
+    public PuzzlePieceUI[] puzzlePieces;
 
     [Header("UI References")]
-    public GameObject completePanel; // refer�ncia ao gerenciador de UI
+    public GameObject completePanel;
 
-    private PuzzlePieceUI[,] grid; // grid 2D para controlar posi��es
-    private Vector2Int emptyPosition; // posi��o do espa�o vazio
-    private bool isMoving = false;
-    private InteractPuzzle mainPuzzleScript;
+    // ✅ SISTEMA SUPER SIMPLES
+    private PuzzlePieceUI[,] grid = new PuzzlePieceUI[3, 2];
+    private Vector2Int emptyPos;
+    private bool canMove = true;
+    
+    // ✅ POSIÇÕES FIXAS ONDE AS PEÇAS DEVEM FICAR
+    private Vector2[] fixedPositions = new Vector2[6];
 
     void Start()
     {
         completePanel.SetActive(false);
-        // Encontra o script principal do puzzle
-        mainPuzzleScript = FindFirstObjectByType<InteractPuzzle>();
-
-        InitializePuzzle();
+        SetupSimple();
     }
 
-    void InitializePuzzle()
+    void SetupSimple()
     {
-        grid = new PuzzlePieceUI[gridWidth, gridHeight];
+        Debug.Log("=== SETUP SIMPLES ===");
+        
+        // ✅ CAPTURA AS POSIÇÕES ONDE AS PEÇAS ESTÃO AGORA
+        CapturePositions();
+        
+        // ✅ MAPEIA CADA PEÇA PARA O GRID
+        MapPieces();
+        
+        Debug.Log("Setup concluído!");
+        DebugGrid();
+    }
 
-        // Configura as pe�as nas posi��es onde j� foram colocadas manualmente
-        for (int i = 0; i < puzzlePieces.Length; i++)
+    void CapturePositions()
+    {
+        Debug.Log("📍 CAPTURANDO POSIÇÕES:");
+        
+        // ✅ ORGANIZA AS PEÇAS POR POSIÇÃO VISUAL
+        List<(Vector2 pos, PuzzlePieceUI piece)> pieces = new List<(Vector2, PuzzlePieceUI)>();
+        
+        foreach (var piece in puzzlePieces)
         {
-            if (puzzlePieces[i] == null) continue;
-
-            // Pega a posi��o atual da pe�a (onde voc� colocou manualmente)
-            Vector2 currentPos = puzzlePieces[i].GetComponent<RectTransform>().anchoredPosition;
-
-            // Calcula qual posi��o do grid esta pe�a est� ocupando
-            Vector2Int gridPos = GetGridPositionFromWorldPos(currentPos);
-
-            // Configura a pe�a
-            puzzlePieces[i].SetGridPosition(gridPos);
-            puzzlePieces[i].correctPosition = puzzlePieces[i].pieceID; // posi��o correta baseada no ID
-
-            // Adiciona ao grid
-            if (gridPos.x >= 0 && gridPos.x < gridWidth && gridPos.y >= 0 && gridPos.y < gridHeight)
+            if (piece != null)
             {
-                grid[gridPos.x, gridPos.y] = puzzlePieces[i];
-            }
-
-            // Encontra o espa�o vazio (pe�a com ID 0)
-            if (puzzlePieces[i].pieceID == 0)
-            {
-                emptyPosition = gridPos;
-                puzzlePieces[i].gameObject.SetActive(false); // esconde o espa�o vazio
+                Vector2 pos = piece.GetComponent<RectTransform>().anchoredPosition;
+                pieces.Add((pos, piece));
+                Debug.Log($"Peça ID {piece.pieceID} em {pos}");
             }
         }
-
-        // Se n�o encontrou espa�o vazio nas pe�as existentes, define como �ltima posi��o
-        if (emptyPosition == Vector2Int.zero)
+        
+        // ✅ ORDENA: PRIMEIRO POR Y (CIMA PARA BAIXO), DEPOIS POR X (ESQUERDA PARA DIREITA)
+        pieces.Sort((a, b) => {
+            if (Mathf.Abs(a.pos.y - b.pos.y) > 10f) // Se Y é diferente
+                return b.pos.y.CompareTo(a.pos.y); // Maior Y primeiro (linha de cima)
+            return a.pos.x.CompareTo(b.pos.x); // Menor X primeiro (esquerda)
+        });
+        
+        // ✅ ARMAZENA AS POSIÇÕES EM ORDEM
+        for (int i = 0; i < Mathf.Min(6, pieces.Count); i++)
         {
-            emptyPosition = new Vector2Int(gridWidth - 1, gridHeight - 1); // canto inferior direito
-        }
-
-        Debug.Log($"Puzzle inicializado. Espa�o vazio em: {emptyPosition}");
-    }
-
-    void CenterPuzzleContainer()
-    {
-        if (puzzleContainer != null)
-        {
-            // Calcula o tamanho total do puzzle
-            float totalWidth = gridWidth * pieceSize + (gridWidth - 1) * pieceSpacing;
-            float totalHeight = gridHeight * pieceSize + (gridHeight - 1) * pieceSpacing;
-
-            // Configura o tamanho do container
-            puzzleContainer.sizeDelta = new Vector2(totalWidth, totalHeight);
+            fixedPositions[i] = pieces[i].pos;
+            Debug.Log($"Posição {i}: {fixedPositions[i]}");
         }
     }
 
-
-    // Adiciona m�todo para converter posi��o UI em posi��o do grid
-    Vector2Int GetGridPositionFromWorldPos(Vector2 worldPos)
+    void MapPieces()
     {
-        // Calcula baseado na posi��o UI atual
-        int x = Mathf.RoundToInt(worldPos.x / (pieceSize + pieceSpacing));
-        int y = Mathf.RoundToInt(-worldPos.y / (pieceSize + pieceSpacing)); // negativo porque UI Y cresce para baixo
-
-        // Garante que est� dentro dos limites
-        x = Mathf.Clamp(x, 0, gridWidth - 1);
-        y = Mathf.Clamp(y, 0, gridHeight - 1);
-
-        return new Vector2Int(x, y);
+        Debug.Log("🗺️ MAPEANDO PEÇAS:");
+        
+        // ✅ ESTADO ATUAL INFORMADO: 2 1 5 / 4 3 0
+        foreach (var piece in puzzlePieces)
+        {
+            if (piece == null) continue;
+            
+            Vector2Int gridPos = Vector2Int.zero;
+            
+            switch (piece.pieceID)
+            {
+                case 2: gridPos = new Vector2Int(0, 0); break; // Superior esquerdo
+                case 1: gridPos = new Vector2Int(1, 0); break; // Superior meio  
+                case 5: gridPos = new Vector2Int(2, 0); break; // Superior direito
+                case 4: gridPos = new Vector2Int(0, 1); break; // Inferior esquerdo
+                case 3: gridPos = new Vector2Int(1, 1); break; // Inferior meio
+                case 0: // Espaço vazio
+                    gridPos = new Vector2Int(2, 1); // Inferior direito
+                    emptyPos = gridPos;
+                    piece.gameObject.SetActive(false);
+                    break;
+            }
+            
+            piece.SetGridPosition(gridPos);
+            grid[gridPos.x, gridPos.y] = piece;
+            
+            Debug.Log($"Peça ID {piece.pieceID} → Grid[{gridPos.x},{gridPos.y}]");
+        }
+        
+        Debug.Log($"Espaço vazio: Grid[{emptyPos.x},{emptyPos.y}]");
     }
+
+    // ========================================
+    // MOVIMENTO SUPER DIRETO
+    // ========================================
 
     public void OnPieceClicked(PuzzlePieceUI piece)
     {
-        if (isMoving) return;
-
+        if (!canMove) return;
+        
+        Debug.Log($"🖱️ CLICOU NA PEÇA ID {piece.pieceID}");
+        
         Vector2Int piecePos = piece.GetGridPosition();
-
-        // Verifica se a pe�a pode se mover (est� adjacente ao espa�o vazio)
-        if (CanMovePiece(piecePos))
+        Debug.Log($"Peça em Grid[{piecePos.x},{piecePos.y}], vazio em Grid[{emptyPos.x},{emptyPos.y}]");
+        
+        // ✅ VERIFICA SE É ADJACENTE
+        if (IsAdjacent(piecePos))
         {
-            MovePieceToEmpty(piecePos, true);
-
-            if (audioSource && movePieceSound)
-                audioSource.PlayOneShot(movePieceSound);
-        }
-    }
-
-    bool CanMovePiece(Vector2Int piecePos)
-    {
-        // Verifica se a pe�a est� adjacente ao espa�o vazio
-        int distX = Mathf.Abs(piecePos.x - emptyPosition.x);
-        int distY = Mathf.Abs(piecePos.y - emptyPosition.y);
-
-        return (distX == 1 && distY == 0) || (distX == 0 && distY == 1);
-    }
-
-    void MovePieceToEmpty(Vector2Int piecePos, bool animate)
-    {
-        if (!animate)
-        {
-            // Movimento instant�neo (para embaralhamento)
-            PuzzlePieceUI piece = grid[piecePos.x, piecePos.y];
-
-            // Troca posi��es no grid
-            grid[emptyPosition.x, emptyPosition.y] = piece;
-            grid[piecePos.x, piecePos.y] = null;
-
-            // Atualiza posi��es
-            piece.SetGridPosition(emptyPosition);
-            piece.GetComponent<RectTransform>().anchoredPosition = GetUIPosition(emptyPosition.x, emptyPosition.y);
-
-            emptyPosition = piecePos;
+            Debug.Log("✅ ADJACENTE - MOVENDO AGORA!");
+            MoveNow(piece, piecePos);
         }
         else
         {
-            // Movimento com anima��o
-            StartCoroutine(MovePieceAnimated(piecePos));
+            Debug.Log("❌ NÃO ADJACENTE");
+            ShowAdjacent();
         }
     }
 
-    IEnumerator MovePieceAnimated(Vector2Int piecePos)
+    bool IsAdjacent(Vector2Int piecePos)
     {
-        isMoving = true;
-
-        PuzzlePieceUI piece = grid[piecePos.x, piecePos.y];
-        Vector2 targetPos = GetUIPosition(emptyPosition.x, emptyPosition.y);
-
-        // Move a pe�a
-        piece.MoveTo(targetPos);
-
-        // Atualiza o grid
-        grid[emptyPosition.x, emptyPosition.y] = piece;
-        grid[piecePos.x, piecePos.y] = null;
-
-        // Atualiza posi��es
-        piece.SetGridPosition(emptyPosition);
-        emptyPosition = piecePos;
-
-        // Espera a anima��o terminar
-        yield return new WaitForSeconds(0.2f);
-
-        isMoving = false;
-
-        // Verifica se o puzzle foi completado
-        if (IsPuzzleComplete())
-        {
-            OnPuzzleCompleted();
-        }
+        int dx = Mathf.Abs(piecePos.x - emptyPos.x);
+        int dy = Mathf.Abs(piecePos.y - emptyPos.y);
+        
+        bool adj = (dx == 1 && dy == 0) || (dx == 0 && dy == 1);
+        Debug.Log($"Distâncias: dx={dx}, dy={dy} → Adjacente: {adj}");
+        
+        return adj;
     }
 
-    List<Vector2Int> GetValidMoves()
+    void ShowAdjacent()
     {
-        List<Vector2Int> validMoves = new List<Vector2Int>();
-
-        // Verifica todas as dire��es adjacentes ao espa�o vazio
-        Vector2Int[] directions = {
-            new Vector2Int(0, 1),  // cima
-            new Vector2Int(0, -1), // baixo
-            new Vector2Int(1, 0),  // direita
-            new Vector2Int(-1, 0)  // esquerda
+        Debug.Log("🔍 PEÇAS QUE PODEM MOVER:");
+        
+        // Checa todas as direções
+        Vector2Int[] dirs = {
+            new Vector2Int(-1, 0), new Vector2Int(1, 0), // esquerda, direita
+            new Vector2Int(0, -1), new Vector2Int(0, 1)  // cima, baixo  
         };
-
-        foreach (Vector2Int dir in directions)
+        
+        foreach (var dir in dirs)
         {
-            Vector2Int checkPos = emptyPosition + dir;
-
-            if (checkPos.x >= 0 && checkPos.x < gridWidth &&
-                checkPos.y >= 0 && checkPos.y < gridHeight)
+            Vector2Int checkPos = emptyPos + dir;
+            if (IsValid(checkPos))
             {
-                validMoves.Add(checkPos);
-            }
-        }
-
-        return validMoves;
-    }
-
-    Vector2 GetUIPosition(int x, int y)
-    {
-        // Calcula a posi��o UI baseada no grid
-        float posX = x * (pieceSize + pieceSpacing);
-        float posY = -y * (pieceSize + pieceSpacing); // negativo porque UI Y cresce para baixo
-
-        return new Vector2(posX, posY);
-    }
-
-    bool IsPuzzleComplete()
-    {
-        // Verifica se todas as pe�as est�o na posi��o correta
-        for (int x = 0; x < gridWidth; x++)
-        {
-            for (int y = 0; y < gridHeight; y++)
-            {
-                PuzzlePieceUI piece = grid[x, y];
-
-                if (piece != null) // n�o verifica o espa�o vazio
+                var piece = grid[checkPos.x, checkPos.y];
+                if (piece != null)
                 {
-                    // A posi��o correta � baseada no pieceID da pe�a
-                    int expectedID = y * gridWidth + x + 1; // +1 porque IDs come�am em 1, n�o 0
-
-                    // Para o formato 3x2, as posi��es corretas s�o:
-                    // (0,0)=1, (1,0)=2, (2,0)=3
-                    // (0,1)=4, (1,1)=5, (2,1)=vazio
-
-                    if (piece.pieceID != expectedID)
-                        return false;
+                    Debug.Log($"  ✅ Peça ID {piece.pieceID} em Grid[{checkPos.x},{checkPos.y}]");
                 }
             }
         }
-
-        return true;
     }
 
-    void OnPuzzleCompleted()
+    bool IsValid(Vector2Int pos)
     {
-        Debug.Log("Puzzle Completado!");
-        completePanel.SetActive(true);
-        // Mostra o espa�o vazio (�ltima pe�a)
-        PuzzlePieceUI emptyPiece = null;
-        foreach (PuzzlePieceUI piece in puzzlePieces)
+        return pos.x >= 0 && pos.x < 3 && pos.y >= 0 && pos.y < 2;
+    }
+
+    void MoveNow(PuzzlePieceUI piece, Vector2Int piecePos)
+    {
+        Debug.Log($"🔄 MOVENDO PEÇA ID {piece.pieceID}");
+        
+        // ✅ CALCULA QUAL SLOT A PEÇA VAI
+        int targetSlot = emptyPos.y * 3 + emptyPos.x; // Converte grid para índice
+        Vector2 targetPos = fixedPositions[targetSlot];
+        
+        Debug.Log($"Peça vai para slot {targetSlot} na posição {targetPos}");
+        
+        // ✅ ATUALIZA O GRID
+        grid[piecePos.x, piecePos.y] = null;
+        grid[emptyPos.x, emptyPos.y] = piece;
+        piece.SetGridPosition(emptyPos);
+        emptyPos = piecePos;
+        
+        // ✅ MOVIMENTO VISUAL DIRETO
+        RectTransform rect = piece.GetComponent<RectTransform>();
+        Vector2 oldPos = rect.anchoredPosition;
+        
+        Debug.Log($"Posição antes: {oldPos}");
+        Debug.Log($"Posição depois: {targetPos}");
+        
+        // ✅ TESTA PRIMEIRO MOVIMENTO INSTANTÂNEO
+        rect.anchoredPosition = targetPos;
+        
+        // ✅ FORÇA UPDATE
+        rect.gameObject.SetActive(false);
+        rect.gameObject.SetActive(true);
+        
+        Debug.Log($"Posição aplicada: {rect.anchoredPosition}");
+        Debug.Log($"Posição real agora: {rect.anchoredPosition}");
+        
+        // ✅ INICIA ANIMAÇÃO SUAVE DEPOIS
+        if (Vector2.Distance(oldPos, targetPos) > 1f)
         {
-            if (piece.pieceID == 0)
+            StartCoroutine(AnimateSmooth(rect, oldPos, targetPos));
+        }
+        
+        DebugGrid();
+        CheckWin();
+    }
+
+    IEnumerator AnimateSmooth(RectTransform rect, Vector2 start, Vector2 target)
+    {
+        float time = 0;
+        float duration = 0.2f;
+        
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float t = time / duration;
+            
+            Vector2 pos = Vector2.Lerp(start, target, t);
+            rect.anchoredPosition = pos;
+            
+            yield return null;
+        }
+        
+        rect.anchoredPosition = target;
+        Debug.Log($"Animação finalizada em: {rect.anchoredPosition}");
+    }
+
+    void CheckWin()
+    {
+        // Verifica se está na ordem: 1 2 [vazio] / 3 4 5
+        if (GetIDAt(0, 0) == 1 && GetIDAt(1, 0) == 2 && IsEmptyAt(2, 0) &&
+            GetIDAt(0, 1) == 3 && GetIDAt(1, 1) == 4 && GetIDAt(2, 1) == 5)
+        {
+            Debug.Log("🎉 PUZZLE COMPLETADO!");
+            
+            // ✅ DESABILITA MOVIMENTOS
+            canMove = false;
+            
+            // ✅ MOSTRA A PEÇA DO ESPAÇO VAZIO PARA COMPLETAR A IMAGEM
+            ShowEmptyPiece();
+            
+            // ✅ INICIA SEQUÊNCIA DE CONCLUSÃO
+            StartCoroutine(CompletionSequence());
+        }
+    }
+
+    void ShowEmptyPiece()
+    {
+        // Encontra e mostra a peça do espaço vazio
+        foreach (var piece in puzzlePieces)
+        {
+            if (piece != null && piece.pieceID == 0)
             {
-                emptyPiece = piece;
+                // Calcula a posição do espaço vazio atual
+                int emptySlot = emptyPos.y * 3 + emptyPos.x;
+                Vector2 emptyRealPos = fixedPositions[emptySlot];
+                
+                Debug.Log($"Mostrando peça do espaço vazio na posição {emptyRealPos}");
+                
+                piece.gameObject.SetActive(true);
+                piece.GetComponent<RectTransform>().anchoredPosition = emptyRealPos;
                 break;
             }
         }
+    }
 
-        if (emptyPiece != null)
+    IEnumerator CompletionSequence()
+    {
+        Debug.Log("⏰ SEQUÊNCIA DE CONCLUSÃO INICIADA");
+        
+        // ✅ ESPERA 2 SEGUNDOS COM A IMAGEM COMPLETA
+        Debug.Log("Aguardando 2 segundos...");
+        yield return new WaitForSeconds(2f);
+        
+        // ✅ MOSTRA O PAINEL DA PINTURA COMPLETA
+        Debug.Log("📜 Mostrando painel da pintura completa");
+        completePanel.SetActive(true);
+        
+        // ✅ ESPERA MAIS 2 SEGUNDOS
+        Debug.Log("Aguardando mais 2 segundos...");
+        yield return new WaitForSeconds(2f);
+        
+        // ✅ SAI DA CENA AUTOMATICAMENTE
+        Debug.Log("🚪 Saindo da cena automaticamente");
+        ExitPuzzleScene();
+    }
+
+    void ExitPuzzleScene()
+    {
+        // ✅ CHAMA O MÉTODO DO SCRIPT PRINCIPAL PARA SAIR
+        InteractPuzzle mainScript = FindFirstObjectByType<InteractPuzzle>();
+        if (mainScript != null)
         {
-            emptyPiece.gameObject.SetActive(true);
-            emptyPiece.GetComponent<RectTransform>().anchoredPosition = GetUIPosition(emptyPosition.x, emptyPosition.y);
+            Debug.Log("Chamando OnPuzzleComplete() do script principal");
+            mainScript.OnPuzzleComplete();
         }
-
-        if (audioSource && completePuzzleSound)
-            audioSource.PlayOneShot(completePuzzleSound);
-
-        // Chama o m�todo do script principal
-        if (mainPuzzleScript != null)
+        else
         {
-            StartCoroutine(CompletePuzzleDelay());
+            Debug.LogWarning("Script InteractPuzzle não encontrado!");
         }
     }
 
-    IEnumerator CompletePuzzleDelay()
+    int GetIDAt(int x, int y)
     {
-        yield return new WaitForSeconds(1f); // pequeno delay para o jogador ver o puzzle completo
-        mainPuzzleScript.OnPuzzleComplete();
+        var piece = grid[x, y];
+        return piece != null ? piece.pieceID : 0;
     }
 
-    void Update()
+    bool IsEmptyAt(int x, int y)
     {
-        // Opcional: highlight das pe�as que podem se mover
-        if (!isMoving)
+        return grid[x, y] == null;
+    }
+
+    // ========================================
+    // DEBUG
+    // ========================================
+
+    [ContextMenu("Debug Grid")]
+    public void DebugGrid()
+    {
+        Debug.Log("📊 GRID ATUAL:");
+        
+        string line0 = "";
+        string line1 = "";
+        
+        for (int x = 0; x < 3; x++)
         {
-            HighlightMovablePieces();
+            var p0 = grid[x, 0];
+            var p1 = grid[x, 1];
+            
+            line0 += (p0 != null ? p0.pieceID.ToString() : "0") + " ";
+            line1 += (p1 != null ? p1.pieceID.ToString() : "0") + " ";
+        }
+        
+        Debug.Log($"Superior: {line0}");
+        Debug.Log($"Inferior: {line1}");
+    }
+
+    [ContextMenu("Teste Movimento Direto")]
+    public void TestDirectMovement()
+    {
+        if (puzzlePieces.Length > 0 && puzzlePieces[0] != null)
+        {
+            Debug.Log("🧪 TESTE DE MOVIMENTO DIRETO");
+            
+            RectTransform rect = puzzlePieces[0].GetComponent<RectTransform>();
+            Vector2 oldPos = rect.anchoredPosition;
+            Vector2 testPos = new Vector2(oldPos.x + 100, oldPos.y);
+            
+            Debug.Log($"Movendo de {oldPos} para {testPos}");
+            
+            rect.anchoredPosition = testPos;
+            
+            Debug.Log($"Posição após movimento: {rect.anchoredPosition}");
+            
+            // Volta para posição original
+            StartCoroutine(ReturnToOriginal(rect, testPos, oldPos));
         }
     }
 
-    void HighlightMovablePieces()
+    IEnumerator ReturnToOriginal(RectTransform rect, Vector2 from, Vector2 to)
     {
-        List<Vector2Int> validMoves = GetValidMoves();
+        yield return new WaitForSeconds(1f);
+        
+        Debug.Log($"Retornando de {from} para {to}");
+        rect.anchoredPosition = to;
+        Debug.Log($"Posição final: {rect.anchoredPosition}");
+    }
 
-        // Remove highlight de todas as pe�as
-        foreach (PuzzlePieceUI piece in puzzlePieces)
+    [ContextMenu("Mostrar Posições Capturadas")]
+    public void ShowCapturedPositions()
+    {
+        Debug.Log("📍 POSIÇÕES CAPTURADAS:");
+        for (int i = 0; i < fixedPositions.Length; i++)
         {
-            if (piece.pieceID != 0)
-                piece.SetHighlight(false);
-        }
-
-        // Adiciona highlight nas pe�as que podem se mover
-        foreach (Vector2Int pos in validMoves)
-        {
-            PuzzlePieceUI piece = grid[pos.x, pos.y];
-            if (piece != null)
-                piece.SetHighlight(true);
+            Debug.Log($"Slot {i}: {fixedPositions[i]}");
         }
     }
 }
