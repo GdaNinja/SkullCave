@@ -6,16 +6,7 @@ public class SoundScene : MonoBehaviour
 {
     public AudioSource sound;
     private float time = 15;
-    void Start()
-    {
 
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))

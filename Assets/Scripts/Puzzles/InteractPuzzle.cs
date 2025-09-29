@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 
 public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 {
-    [SerializeField] private GameObject pinturaCompleta, imgPintura, gameObjectToEnable, smokeEffect; 
+    [SerializeField] private GameObject pinturaCompleta, imgPintura, gameObjectToEnable, smokeEffect;
     public GameObject txtInteract;
 
 
@@ -77,12 +77,17 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 
         if (pinturaCompleta != null)
             pinturaCompleta.SetActive(true);
-            if (imgPintura != null)
+        if (imgPintura != null)
             imgPintura.SetActive(false);
-            if (gameObjectToEnable != null)
+        if (gameObjectToEnable != null)
             gameObjectToEnable.SetActive(true);
-            if (smokeEffect != null)
+        if (smokeEffect != null)
             smokeEffect.SetActive(true);
+        if (puzzleCompleted)
+        {
+            Collider collision = GetComponent<Collider>();
+            collision.enabled = false; // desativa a colisão para não poder interagir mais
+        }
         exitInteract(); // fecha o puzzle e volta ao jogo
     }
 }

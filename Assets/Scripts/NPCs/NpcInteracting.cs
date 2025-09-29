@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using Unity.VisualScripting.ReorderableList.Element_Adder_Menu;
-
 public class NpcInteracting : MonoBehaviour, IExtendedInteractable
 {
-    public GameObject txtNpc;
+    public GameObject txtNpc, txtContinue;
     [SerializeField, TextArea(4, 6)] string[] dialogueLines;
     [SerializeField] GameObject dialoguePanel;
     [SerializeField] TMP_Text dialogueTxt;
@@ -18,6 +16,7 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
     {
         txtNpc.SetActive(false);
         dialoguePanel.SetActive(false);
+        txtContinue.SetActive(false);
     }
 
     public void Interact()
@@ -61,6 +60,7 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
             dialogueStart = false;
             dialoguePanel.SetActive(false);
             player.isInteracting = false;
+            txtContinue.SetActive(false);
         }
     }
     IEnumerator ShowLines()
@@ -70,6 +70,14 @@ public class NpcInteracting : MonoBehaviour, IExtendedInteractable
         {
             dialogueTxt.text += ch;
             yield return new WaitForSecondsRealtime(timingChar);
+        }
+        if (index == dialogueLines.Length - 1)
+        {
+            txtContinue.SetActive(false);
+        }
+        else
+        {
+            txtContinue.SetActive(true);
         }
     }
 }
