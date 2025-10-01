@@ -1,28 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.AppUI.UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
     public GameObject menuInitial, menuOptions;
+    
     void Start()
     {
         menuOptions.SetActive(false);
     }
 
     // Update is called once per frame
-    void Update()
-    {
 
-    }
     public void NewGame()
     {
         SceneManager.LoadScene("SampleScene");
-    }
-    public void LoadGame()
-    {
-
     }
     public void Options()
     {
@@ -38,4 +33,5 @@ public class MenuController : MonoBehaviour
     {
         Application.Quit();
     }
+   
 }

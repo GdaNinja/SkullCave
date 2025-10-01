@@ -7,6 +7,7 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
 {
     [SerializeField] private GameObject pinturaCompleta, imgPintura, gameObjectToEnable, smokeEffect;
     public GameObject txtInteract;
+    public FlashlightController flashlight; // referência à lanterna do jogador
 
 
     [HideInInspector] public bool puzzleActive; // está aberto agora?
@@ -34,6 +35,7 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
             puzzleActive = true;
             Cursor.lockState = CursorLockMode.Confined;
             Cursor.visible = true;
+            flashlight.enabled = false; // desliga a lanterna
             // carrega a cena do puzzle em modo additivo
             SceneManager.LoadSceneAsync("Puzzle", LoadSceneMode.Additive);
         }
@@ -63,6 +65,7 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
     public void exitInteract()
     {
         PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
+        flashlight.enabled = true; // liga a lanterna de novo
         if (player != null) player.isInteracting = false;
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -74,7 +77,6 @@ public class InteractPuzzle : MonoBehaviour, IExtendedInteractable
     public void OnPuzzleComplete()
     {
         puzzleCompleted = true;
-
         if (pinturaCompleta != null)
             pinturaCompleta.SetActive(true);
         if (imgPintura != null)
