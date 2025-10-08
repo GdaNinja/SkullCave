@@ -1,6 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
-using JetBrains.Annotations;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,6 +11,7 @@ public class FlashlightController : MonoBehaviour
     public Image energyBarFill;
     public Image energyBarBorder;
     private Light lightController;
+
     [SerializeField] float delay; // Tempo entre ligar/desligar
     [SerializeField] float addValue;
     [SerializeField] bool canToggle = true; // Impede múltiplos cliques rápidos
@@ -20,44 +19,53 @@ public class FlashlightController : MonoBehaviour
     [SerializeField] Color standardColor = new Color(1, 1, 1, 1);
     [SerializeField] Color lowEnergyColor = new Color(1, 0, 0, 1);
 
+    bool isFlickering = false; // impede múltiplos piscas
+    float normalIntensity;
+
     void Awake()
     {
         lightController = GetComponentInChildren<Light>();
         player = FindFirstObjectByType<PlayerStateManager>();
     }
+
     void Start()
     {
         lightController.enabled = false;
         Bar.SetActive(false);
+        normalIntensity = lightController.intensity;
     }
 
     void Update()
     {
         HasEnergy();
+
         if (Input.GetMouseButtonDown(0) && canToggle)
         {
             showEnergyBar(true);
-            turnSound.Play(); // Toca o som primeiro
+            turnSound.Play();
             if (HasEnergy()) StartCoroutine(ToggleFlashlight());
         }
+
         StartCoroutine(EnergyFlashLight());
     }
+
     void showEnergyBar(bool show)
     {
         if (energyBarActive == show) return;
         energyBarActive = show;
         StartCoroutine(showEnergyUI(show));
     }
+
     public bool HasEnergy()
     {
         getFlashlight.hasEnergy = getFlashlight.energy > 0;
         return getFlashlight.hasEnergy;
     }
+
     IEnumerator showEnergyUI(bool show)
     {
         float duration = 1f;
         float time = 0f;
-
         float startAlpha = show ? 0f : 1f;
         float endAlpha = show ? 1f : 0f;
 
@@ -66,64 +74,100 @@ public class FlashlightController : MonoBehaviour
         {
             time += Time.deltaTime;
             float alpha = Mathf.Lerp(startAlpha, endAlpha, time / duration);
-
             energyBarFill.color = new Color(energyBarFill.color.r, energyBarFill.color.g, energyBarFill.color.b, alpha);
             energyBarBorder.color = new Color(energyBarBorder.color.r, energyBarBorder.color.g, energyBarBorder.color.b, alpha);
-
             yield return null;
         }
-        float finalAlpha = endAlpha;
-        energyBarFill.color = new Color(energyBarFill.color.r, energyBarFill.color.g, energyBarFill.color.b, finalAlpha);
-        energyBarBorder.color = new Color(energyBarBorder.color.r, energyBarBorder.color.g, energyBarBorder.color.b, finalAlpha);
-        if (!show) Bar.SetActive(false);
 
+        if (!show) Bar.SetActive(false);
     }
+
     IEnumerator ToggleFlashlight()
     {
-        canToggle = false; // Bloqueia novas trocas durante o delay
-        yield return new WaitForSeconds(0.4f); // Espera o tempo definido
+        canToggle = false;
+        yield return new WaitForSeconds(0.4f);
+
         if (!player.isInteracting)
         {
-            lightController.enabled = !lightController.enabled; // Liga/desliga a luz
+            lightController.enabled = !lightController.enabled;
         }
-        yield return new WaitForSeconds(delay); // Espera o tempo definido
 
-        canToggle = true; // Libera novamente o clique
+        if (!lightController.enabled) showEnergyBar(false);
+
+        yield return new WaitForSeconds(delay);
+        canToggle = true;
     }
+
     IEnumerator EnergyFlashLight()
     {
-        if (lightController.enabled == true)
+        if (lightController.enabled)
         {
-            getFlashlight.energy -= .25f * Time.deltaTime;
+            getFlashlight.energy -= 0.25f * Time.deltaTime;
+
+            // Cor da barra
             if (getFlashlight.energy <= 30)
             {
                 energyBarFill.color = lowEnergyColor;
                 energyBarBorder.color = lowEnergyColor;
+
+                // começa a piscar quando está vermelha
+                if (!isFlickering)
+                    StartCoroutine(FlickerLight());
             }
             else
             {
                 energyBarFill.color = standardColor;
                 energyBarBorder.color = standardColor;
             }
-            yield return null; // Espera um frame pra voltar a agir
+
+            yield return null;
+
+            // energia acabou
             if (getFlashlight.energy <= 0)
             {
-                turnSound.Play(); // Toca o som primeiro
-                getFlashlight.hasEnergy = false;
                 getFlashlight.energy = 0;
-                yield return new WaitForSeconds(delay);
+                getFlashlight.hasEnergy = false;
                 lightController.enabled = false;
+                showEnergyBar(false);
             }
-            if (getFlashlight.energy <= 0 || !lightController.enabled) showEnergyBar(false);
 
             energyBarFill.fillAmount = getFlashlight.energy / getFlashlight.energyMax;
-            Debug.Log(getFlashlight.energy);
         }
     }
+
+    IEnumerator FlickerLight()
+    {
+        isFlickering = true;
+
+        // piscar mais rápido conforme a energia diminui
+        while (lightController.enabled && getFlashlight.energy <= 30 && getFlashlight.energy > 0)
+        {
+            // intervalo baseado na porcentagem de energia restante
+            float percent = getFlashlight.energy / 30f; // entre 0 e 1
+            float offTime = Mathf.Lerp(0.02f, 0.1f, percent);  // quanto menor a energia, menor o tempo desligada
+            float onTime = Mathf.Lerp(0.05f, 0.25f, percent);  // quanto menor a energia, menor o tempo ligada
+
+            lightController.enabled = false;
+            yield return new WaitForSeconds(offTime);
+            lightController.enabled = true;
+            yield return new WaitForSeconds(onTime);
+        }
+
+        isFlickering = false;
+    }
+
     public void addBatery()
     {
         getFlashlight.energy += addValue;
-        if (getFlashlight.energy >= getFlashlight.energyMax) getFlashlight.energy = getFlashlight.energyMax;
+        if (getFlashlight.energy >= getFlashlight.energyMax)
+            getFlashlight.energy = getFlashlight.energyMax;
+
         energyBarFill.fillAmount = getFlashlight.energy / getFlashlight.energyMax;
+
+        // se estava desligada por falta de energia, volta a funcionar normalmente
+        if (getFlashlight.energy > 0 && !lightController.enabled && HasEnergy())
+        {
+            lightController.enabled = true;
+        }
     }
 }

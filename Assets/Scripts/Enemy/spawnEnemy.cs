@@ -5,7 +5,7 @@ using Unity.Cinemachine;
 public class spawnEnemy : MonoBehaviour
 {
     [Header("Spawn Settings")]
-    public GameObject enemyPrefab; // Prefab do inimigo
+    public GameObject enemyPrefab, smokeSpawn; // Prefab do inimigo
     public Transform spawnPoint; // Ponto onde o inimigo vai spawnar (Objeto 2)
     
     [Header("Camera Settings")]
@@ -26,6 +26,10 @@ public class spawnEnemy : MonoBehaviour
     {
         // Pega o componente POV da virtual camera
         pov = vcam.GetCinemachineComponent<CinemachinePOV>();
+    }
+    private void Start()
+    {
+        smokeSpawn.SetActive(false);
     }
 
     void OnTriggerEnter(Collider other)
@@ -58,7 +62,7 @@ public class spawnEnemy : MonoBehaviour
         // Calcula os ângulos necessários (Yaw = horizontal, Pitch = vertical)
         float targetYaw = Mathf.Atan2(directionToSpawn.x, directionToSpawn.z) * Mathf.Rad2Deg;
         float targetPitch = -Mathf.Atan2(directionToSpawn.y, 
-            new Vector2(directionToSpawn.x, directionToSpawn.z).magnitude) * Mathf.Rad2Deg;
+        new Vector2(directionToSpawn.x, directionToSpawn.z).magnitude) * Mathf.Rad2Deg;
         
         // 5. ROTACIONA SUAVEMENTE PARA O SPAWN POINT
         float elapsed = 0f;
@@ -76,6 +80,8 @@ public class spawnEnemy : MonoBehaviour
         }
         
         // 6. SPAWNA O INIMIGO
+        smokeSpawn.SetActive(true);
+        yield return new WaitForSeconds(1.5f);
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
         
         // 7. MANTÉM OLHANDO PARA O INIMIGO
@@ -99,7 +105,7 @@ public class spawnEnemy : MonoBehaviour
         
         // 10. REATIVA O MOVIMENTO DO PLAYER
         // Volta para idle para recomeçar normalmente
-        playerState.SwitchState(playerState.idleState);
+        playerState.isInteracting = false;
         
         // OPCIONAL: Se você quiser que o inimigo faça algo depois, use aqui
         // Exemplo: enemy.GetComponent<EnemyAI>().StartChase();

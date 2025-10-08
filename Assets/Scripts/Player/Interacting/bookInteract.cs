@@ -55,18 +55,7 @@ public class bookInteract : MonoBehaviour, IExtendedInteractable
         }
         else
         {
-            PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
-            dialogueStart = false;
-            dialoguePanel.SetActive(false);
-            player.isInteracting = false;
-            txtContinue.SetActive(false);
-            if (paredeDeletavel != null)
-            {
-                paredeDeletavel.SetActive(false);
-                audioSuspense.Play();
-            }
-            if (smokeEffect != null)
-                smokeEffect.SetActive(true);
+            StartCoroutine(ParedeDeletavel());
         }
     }
     IEnumerator ShowLines()
@@ -79,4 +68,20 @@ public class bookInteract : MonoBehaviour, IExtendedInteractable
         }
         txtContinue.SetActive(true);
     }
+IEnumerator ParedeDeletavel()
+{
+    PlayerStateManager player = FindFirstObjectByType<PlayerStateManager>();
+    dialogueStart = false;
+    dialoguePanel.SetActive(false);
+    player.isInteracting = false;
+    txtContinue.SetActive(false);
+    if (smokeEffect != null)
+        {
+        smokeEffect.SetActive(true);
+        audioSuspense.Play();
+        }
+    yield return new WaitForSecondsRealtime(5);
+    if (paredeDeletavel != null)
+        paredeDeletavel.SetActive(false);
+}
 }
