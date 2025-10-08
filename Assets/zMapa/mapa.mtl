@@ -1,0 +1,117 @@
+newmtl chao_silencio
+map_Kd chão_sala_silencio_Albedo.png
+map_Pm chão_sala_silencio_Roughness.png
+bump chão_sala_silencio_Normal.png
+disp chão_sala_silencio_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl chao_ritual
+map_Kd chao_sala_ritual_Albedo.png
+map_Pm chao_sala_ritual_Roughness.png
+bump chao_sala_ritual_Normal.png
+disp chao_sala_ritual_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl parede_corredor-caveira-amarelo
+map_Kd caveira_certa_Albedo.png
+map_Pm caveira_certa_Roughness.png
+bump caveira_certa_Normal.png
+disp caveira_certa_Displacement.exr
+Kd 0.7547169 0.7547169 0.7547169
+d 1
+
+newmtl chao_madeira
+map_Kd piso_madeira_claro_Albedo.png
+map_Pm piso_madeira_claro_Roughness.png
+bump piso_madeira_claro_Normal.png
+disp piso_madeira_claro_Displacement.exr
+Kd 0.6603774 0.6603774 0.6603774
+d 1
+
+newmtl chao
+map_Kd chao_do_jeito_q_eu_qro_Albedo.png
+map_Pm chao_do_jeito_q_eu_qro_Roughness.png
+bump chao_do_jeito_q_eu_qro_Normal.png
+disp chao_do_jeito_q_eu_qro_Displacement.exr
+Kd 0.6792453 0.6792453 0.6792453
+d 1
+
+newmtl chão_salão
+map_Kd marmore_Albedo.png
+map_Pm marmore_Roughness.png
+bump marmore_Normal.png
+disp marmore_Displacement.exr
+Kd 0.7830188 0.7830188 0.7830188
+d 1
+
+newmtl parede_corredor-pedra
+map_Kd parede_corredor-1_Albedo.png
+map_Pm parede_corredor-1_Roughness.png
+bump parede_corredor-1_Normal.png
+disp parede_corredor-1_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl chao_base
+map_Kd chao_corredor_Diffuse.png
+map_Pm chao_corredor_Gloss.png
+bump chao_corredor_Normal.png
+disp chao_corredor_Displacement.exr
+Kd 1 0.9652658 0.8726415
+d 1
+
+newmtl ProBuilderDefault
+map_Kd GridBox_Default.png
+Kd 1 1 1
+d 1
+
+newmtl parede_corredor-caveira-preto
+map_Kd caveiras_preta_Albedo.png
+map_Pm caveiras_preta_Roughness.png
+bump caveiras_preta_Normal.png
+disp caveiras_preta_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl parede_artistas
+map_Kd parede_artistas_Albedo.png
+map_Pm parede_artistas_Roughness.png
+bump parede_artistas_Normal.png
+disp parede_artistas_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl parede_salao
+map_Kd parede_salao_Albedo.png
+map_Pm parede_salao_Roughness.png
+bump parede_salao_Normal.png
+disp parede_salao_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl Parede_silencio
+map_Kd parede_sala_silencio_Albedo.png
+map_Pm parede_sala_silencio_Roughness.png
+bump parede_sala_silencio_Normal.png
+disp parede_sala_silencio_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl parede_ritual
+map_Kd parede_sala_ritual_Albedo.png
+map_Pm parede_sala_ritual_Roughness.png
+bump parede_sala_ritual_Normal.png
+disp parede_sala_ritual_Displacement.exr
+Kd 1 1 1
+d 1
+
+newmtl madeira
+map_Kd madeira_obj_3_Albedo.png
+map_Pm madeira_obj_3_Roughness.png
+bump madeira_obj_3_Normal.png
+disp madeira_obj_3_Displacement.exr
+Kd 0.2924528 0.2924528 0.2924528
+d 1
+
