@@ -18,7 +18,7 @@ public class PlayerStateManager : MonoBehaviour
     public Image StaminaBorder;
     public GameObject staminaUI;
     public Transform playerPivot;
-    public AudioSource walikingSound;
+    public AudioSource walikingSound, tiredSound;
     public AudioSource runningSound;
     public Animator animator;
     public Animator staminaAnimator;
@@ -177,6 +177,7 @@ public class PlayerStateManager : MonoBehaviour
             isBlinking = false;
             StaminaBar.color = standardColor;
             StaminaBorder.color = standardColor;
+            tiredSound.Stop();
         }
         yield return new WaitForSeconds(timeDelay);
         if (!CanRun() && getPlayer.stamina >= getPlayer.staminaMax)
@@ -190,6 +191,7 @@ public class PlayerStateManager : MonoBehaviour
         isBlinking = true;
         float timeBlink = 0f;
         bool fadeOut = true;
+        tiredSound.Play();
 
         while (getPlayer.stamina < getPlayer.staminaMax)
         {
