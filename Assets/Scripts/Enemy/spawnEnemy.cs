@@ -7,6 +7,7 @@ public class spawnEnemy : MonoBehaviour
     [Header("Spawn Settings")]
     public GameObject enemyPrefab, smokeSpawn; // Prefab do inimigo
     public Transform spawnPoint; // Ponto onde o inimigo vai spawnar (Objeto 2)
+    public AudioSource Sound; // Fonte de áudio para o som de spawn
     
     [Header("Camera Settings")]
     public CinemachineVirtualCamera vcam; // Sua virtual camera
@@ -67,21 +68,22 @@ public class spawnEnemy : MonoBehaviour
         // 5. ROTACIONA SUAVEMENTE PARA O SPAWN POINT
         float elapsed = 0f;
         float turnDuration = lookDuration / 3f; // 1/3 do tempo para girar
-        
+
         while (elapsed < turnDuration)
         {
             elapsed += Time.deltaTime * rotationSpeed;
             float t = elapsed / turnDuration;
-            
+
             pov.m_HorizontalAxis.Value = Mathf.LerpAngle(originalHorizontalAngle, targetYaw, t);
             pov.m_VerticalAxis.Value = Mathf.Lerp(originalVerticalAngle, targetPitch, t);
-            
+
             yield return null;
         }
         
         // 6. SPAWNA O INIMIGO
+        Sound.Play();
         smokeSpawn.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(2.5f);
         GameObject enemy = Instantiate(enemyPrefab, spawnPoint.position, spawnPoint.rotation);
         
         // 7. MANTÉM OLHANDO PARA O INIMIGO

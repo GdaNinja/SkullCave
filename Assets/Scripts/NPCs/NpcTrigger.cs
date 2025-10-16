@@ -26,7 +26,7 @@ public class NpcTrigger : MonoBehaviour
 
             if (direction.magnitude > 0.01f)
             {
-                Quaternion lookRotation = Quaternion.LookRotation(-direction);
+                Quaternion lookRotation = Quaternion.LookRotation(direction);
                 npcModel.rotation = Quaternion.Slerp(npcModel.rotation, lookRotation, Time.deltaTime * rotationSpeed);
             }
         }

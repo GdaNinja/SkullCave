@@ -10504,7 +10504,7 @@ PrefabInstance:
       addedObject: {fileID: 9012285081880157416}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1179328098045036979}
+      addedObject: {fileID: 2403020729352657666}
   m_SourcePrefab: {fileID: 100100000, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
 --- !u!1 &4010528539950119526 stripped
 GameObject:
@@ -10556,7 +10556,7 @@ CapsuleCollider:
   m_Height: 2.3
   m_Direction: 1
   m_Center: {x: 0, y: 1.1, z: 0}
---- !u!114 &1179328098045036979
+--- !u!114 &2403020729352657666
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10568,16 +10568,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa456830682a59d4b856f48ad740e8c8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyIA
-  minDistanceToFollow: 1.2
-  minDistanceToPoint: 1
-  timeToStartNavigation: 3
-  spdOfNavigation: 1
-  spdOfFollow: 3
-  eyes: {fileID: 8341527795376793579}
-  visionRadius: 10
-  visionAngle: 45
-  timeOfNavigation: 4
-  navegationsPoints: []
+  navMeshAgent: {fileID: 0}
+  playerTransform: {fileID: 0}
+  animator: {fileID: 0}
+  fieldOfViewDistance: 15
+  fieldOfViewAngle: 120
+  visionObstacleMask:
+    serializedVersion: 2
+    m_Bits: 0
+  navigationPointTag: NavigationPoint
+  patrolWaitTime: 2
+  maxDistanceToPoint: 1
+  pointSearchRadius: 50
+  chaseSpeed: 3
+  patrolSpeed: 1.5
+  lostTargetTimeout: 3
 --- !u!4 &4387511925982535900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
