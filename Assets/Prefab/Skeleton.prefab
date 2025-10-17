@@ -10578,7 +10578,7 @@ MonoBehaviour:
     m_Bits: 0
   navigationPointTag: NavigationPoint
   patrolWaitTime: 2
-  maxDistanceToPoint: 1
+  maxDistanceToPoint: 10
   pointSearchRadius: 50
   chaseSpeed: 3
   patrolSpeed: 1.5

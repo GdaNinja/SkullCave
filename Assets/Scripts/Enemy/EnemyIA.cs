@@ -23,14 +23,14 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private Animator animator;
 
     [Header("Configurações de Visão")]
-    [SerializeField] private float fieldOfViewDistance = 20f;
+    [SerializeField] private float fieldOfViewDistance = 15f;
     [SerializeField] private float fieldOfViewAngle = 45f;
     [SerializeField] private LayerMask visionObstacleMask;
 
     [Header("Configurações de Patrulha")]
     [SerializeField] private string navigationPointTag = "NavigationPoint";
     [SerializeField] private float patrolWaitTime = 2f;
-    [SerializeField] private float maxDistanceToPoint = 1f;
+    [SerializeField] private float maxDistanceToPoint = 10f;
     [SerializeField] private float pointSearchRadius = 50f;
 
     [Header("Configurações de Perseguição")]
