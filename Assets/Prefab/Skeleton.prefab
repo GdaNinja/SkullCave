@@ -10504,7 +10504,10 @@ PrefabInstance:
       addedObject: {fileID: 9012285081880157416}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2403020729352657666}
+      addedObject: {fileID: 1108715818155159471}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7070512326654921615}
   m_SourcePrefab: {fileID: 100100000, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
 --- !u!1 &4010528539950119526 stripped
 GameObject:
@@ -10556,7 +10559,7 @@ CapsuleCollider:
   m_Height: 2.3
   m_Direction: 1
   m_Center: {x: 0, y: 1.1, z: 0}
---- !u!114 &2403020729352657666
+--- !u!114 &1108715818155159471
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -10567,12 +10570,12 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fa456830682a59d4b856f48ad740e8c8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemyIA
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   navMeshAgent: {fileID: 0}
   playerTransform: {fileID: 0}
   animator: {fileID: 0}
   fieldOfViewDistance: 15
-  fieldOfViewAngle: 120
+  fieldOfViewAngle: 45
   visionObstacleMask:
     serializedVersion: 2
     m_Bits: 0
@@ -10583,6 +10586,36 @@ MonoBehaviour:
   chaseSpeed: 3
   patrolSpeed: 1.5
   lostTargetTimeout: 3
+  JumpScareSound: {fileID: 0}
+  JumpScareImage: {fileID: 0}
+  jumpScareWaitTime: 5
+--- !u!54 &7070512326654921615
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010528539950119526}
+  serializedVersion: 5
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!4 &4387511925982535900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}

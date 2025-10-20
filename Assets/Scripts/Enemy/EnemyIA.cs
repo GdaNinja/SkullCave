@@ -1,8 +1,9 @@
-
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class EnemyAI : MonoBehaviour
 {
@@ -12,7 +13,8 @@ public class EnemyAI : MonoBehaviour
         Idle,
         Patrol,
         Chase,
-        Lost
+        Lost,
+        JumpScareImage
     }
 
     [Header("Componentes")]
@@ -38,6 +40,13 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private float patrolSpeed = 1.5f;
     [SerializeField] private float lostTargetTimeout = 3f;
 
+    [Header("Configurações de JumpScare")]
+    [Tooltip("NÃO PREENCHER - Será encontrado automaticamente via JumpScareManager")]
+    public AudioSource JumpScareSound;
+    [Tooltip("NÃO PREENCHER - Será encontrado automaticamente via JumpScareManager")]
+    public GameObject JumpScareImage;
+    [SerializeField] private float jumpScareWaitTime = 5f;
+
     private List<Transform> patrolPoints = new List<Transform>();
     private int currentPatrolIndex = -1;
     private float patrolWaitTimer = 0f;
@@ -47,17 +56,34 @@ public class EnemyAI : MonoBehaviour
 
     private void Start()
     {
+        // Inicializa o NavMeshAgent
         if (navMeshAgent == null)
             navMeshAgent = GetComponent<NavMeshAgent>();
 
+        // Busca o player na cena
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
 
         // ANIMAÇÃO: Se não houver Animator atribuído no Inspector, tenta pegar do gameObject
-       // if (animator == null)
-            //animator = GetComponent<Animator>();
+        // if (animator == null)
+        //     animator = GetComponent<Animator>();
 
+        // Busca automaticamente as referências do JumpScare via Manager
+        JumpScareManager manager = JumpScareManager.Instance;
+        if (manager != null)
+        {
+            JumpScareImage = manager.jumpScareImage;
+            JumpScareSound = manager.jumpScareSound;
+        }
+        else
+        {
+            Debug.LogError("[EnemyAI] JumpScareManager não encontrado na cena! Adicione o script JumpScareManager.");
+        }
+
+        // Inicializa os pontos de patrulha
         InitializePatrolPoints();
+        
+        // Inicia o estado de patrulha
         ChangeState(AIState.Patrol);
     }
 
@@ -96,7 +122,7 @@ public class EnemyAI : MonoBehaviour
         }
 
         // ANIMAÇÃO: Atualiza os parâmetros do Animator com os valores atuais
-       // UpdateAnimator();
+        // UpdateAnimator();
     }
 
     private void InitializePatrolPoints()
@@ -104,11 +130,19 @@ public class EnemyAI : MonoBehaviour
         patrolPoints.Clear();
         GameObject[] allPoints = GameObject.FindGameObjectsWithTag(navigationPointTag);
 
+        if (allPoints.Length == 0)
+        {
+            Debug.LogWarning($"[EnemyAI] Nenhum ponto com tag '{navigationPointTag}' foi encontrado!");
+            return;
+        }
+
         Vector3 myPosition = transform.position;
 
         foreach (GameObject point in allPoints)
         {
-            if (Vector3.Distance(point.transform.position, myPosition) <= pointSearchRadius)
+            float distance = Vector3.Distance(point.transform.position, myPosition);
+            
+            if (distance <= pointSearchRadius)
             {
                 if (IsPointOnSameArea(myPosition, point.transform.position))
                 {
@@ -120,6 +154,11 @@ public class EnemyAI : MonoBehaviour
         if (patrolPoints.Count > 0)
         {
             currentPatrolIndex = 0;
+            Debug.Log($"[EnemyAI] {patrolPoints.Count} pontos de patrulha encontrados!");
+        }
+        else
+        {
+            Debug.LogWarning("[EnemyAI] Nenhum ponto de patrulha válido foi encontrado próximo ao inimigo!");
         }
     }
 
@@ -219,7 +258,7 @@ public class EnemyAI : MonoBehaviour
                 {
                     currentPatrolIndex = 0;
                 }
-                if (currentPatrolIndex >= 0)
+                if (currentPatrolIndex >= 0 && currentPatrolIndex < patrolPoints.Count)
                 {
                     navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
                 }
@@ -246,17 +285,17 @@ public class EnemyAI : MonoBehaviour
     private void UpdateAnimator()
     {
         // ANIMAÇÃO: Verifica se o Animator existe antes de usar
-        //if (animator == null)
-        //    return;
+        // if (animator == null)
+        //     return;
 
         // ANIMAÇÃO: Calcula a velocidade atual do movimento (magnitude do vetor de velocidade)
-        //float speed = navMeshAgent.velocity.magnitude;
+        // float speed = navMeshAgent.velocity.magnitude;
 
         // ANIMAÇÃO: Envia a velocidade para o Animator controlar o blend de animações (parado/caminhando/correndo)
-       // animator.SetFloat("Speed", speed);
+        // animator.SetFloat("Speed", speed);
 
         // ANIMAÇÃO: Envia o estado atual como inteiro para o Animator controlar qual animação deve tocar
-        //animator.SetInteger("State", (int)currentState);
+        // animator.SetInteger("State", (int)currentState);
     }
 
     public AIState GetCurrentState()
@@ -275,6 +314,54 @@ public class EnemyAI : MonoBehaviour
     public void RemovePatrolPoint(Transform point)
     {
         patrolPoints.Remove(point);
+    }
+
+    /// <summary>
+    /// Executa o jumpscare: ativa a imagem, toca o som e carrega a cena de Game Over
+    /// </summary>
+    public void PlayJumpScareImage()
+    {
+        Debug.Log("[EnemyAI] PlayJumpScareImage chamado!");
+        
+        // Usa o JumpScareManager para garantir que sempre funcione
+        JumpScareManager manager = JumpScareManager.Instance;
+        if (manager != null)
+        {
+            manager.TriggerJumpScare();
+        }
+        else
+        {
+            // Fallback para o método antigo
+            if (JumpScareImage != null)
+            {
+                JumpScareImage.SetActive(true);
+                Debug.Log("[EnemyAI] JumpScareImage ativado!");
+            }
+            else
+            {
+                Debug.LogError("[EnemyAI] JumpScareImage não foi atribuído!");
+            }
+
+            if (JumpScareSound != null)
+            {
+                JumpScareSound.Play();
+                Debug.Log("[EnemyAI] JumpScareSound tocando!");
+            }
+            else
+            {
+                Debug.LogWarning("[EnemyAI] JumpScareSound não foi atribuído!");
+            }
+
+            StartCoroutine(LoadSceneOnSeconds(jumpScareWaitTime));
+        }
+    }
+
+    private IEnumerator LoadSceneOnSeconds(float time)
+    {
+        Debug.Log($"[EnemyAI] Aguardando {time} segundos para carregar GameOver...");
+        yield return new WaitForSeconds(time);
+        Debug.Log("[EnemyAI] Carregando cena GameOver...");
+        SceneManager.LoadScene("GameOver");
     }
 
     private void OnDrawGizmosSelected()

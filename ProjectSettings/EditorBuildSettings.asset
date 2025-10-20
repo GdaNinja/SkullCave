@@ -14,5 +14,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Puzzle.unity
     guid: bc557a6f5aacb5142bb29999f9d8c9b8
+  - enabled: 1
+    path: Assets/Scenes/GameOver.unity
+    guid: d420d40e3ed63824abb149282ba18d3a
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

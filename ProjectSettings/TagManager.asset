@@ -8,6 +8,8 @@ TagManager:
   - Checkpoint
   - Enemy
   - NavigationPoint
+  - enemy
+  - JumpScare
   layers:
   - Default
   - TransparentFX
