@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "SkullCave.sln"
+    "dotnet.defaultSolution": "SkullCave.slnx"
 }
