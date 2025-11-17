@@ -30,7 +30,7 @@ public class RunningState : PlayerBaseState
 
         player.ShowStaminaUI(true);
         
-        player.getPlayer.stamina -= 20f * Time.deltaTime;
+        player.getPlayer.stamina -= 10f * Time.deltaTime;
         if (player.getPlayer.stamina <= 0)
             player.getPlayer.stamina = 0;
         player.UpdateStaminaBar();

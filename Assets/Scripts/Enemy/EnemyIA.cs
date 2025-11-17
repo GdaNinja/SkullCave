@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
@@ -21,7 +22,8 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private NavMeshAgent navMeshAgent;
     [SerializeField] private Transform playerTransform;
 
-    // ANIMAÇÃO: Referência ao componente Animator para controlar as animações do inimigo
+    [Header("Animação")]
+    [Tooltip("Animator do inimigo - será buscado automaticamente se não atribuído")]
     [SerializeField] private Animator animator;
 
     [Header("Configurações de Visão")]
@@ -64,9 +66,25 @@ public class EnemyAI : MonoBehaviour
         if (playerTransform == null)
             playerTransform = GameObject.FindGameObjectWithTag("Player")?.transform;
 
-        // ANIMAÇÃO: Se não houver Animator atribuído no Inspector, tenta pegar do gameObject
-        // if (animator == null)
-        //     animator = GetComponent<Animator>();
+        // ANIMAÇÃO: Busca o Animator automaticamente se não foi atribuído
+        if (animator == null)
+        {
+            animator = GetComponent<Animator>();
+            if (animator == null)
+            {
+                // Tenta buscar em objetos filhos (caso o modelo 3D esteja em um filho)
+                animator = GetComponentInChildren<Animator>();
+            }
+
+            if (animator == null)
+            {
+                Debug.LogWarning("[EnemyAI] Animator não encontrado! As animações não funcionarão.");
+            }
+            else
+            {
+                Debug.Log("[EnemyAI] Animator encontrado automaticamente!");
+            }
+        }
 
         // Busca automaticamente as referências do JumpScare via Manager
         JumpScareManager manager = JumpScareManager.Instance;
@@ -82,7 +100,7 @@ public class EnemyAI : MonoBehaviour
 
         // Inicializa os pontos de patrulha
         InitializePatrolPoints();
-        
+
         // Inicia o estado de patrulha
         ChangeState(AIState.Patrol);
     }
@@ -121,8 +139,8 @@ public class EnemyAI : MonoBehaviour
                 break;
         }
 
-        // ANIMAÇÃO: Atualiza os parâmetros do Animator com os valores atuais
-        // UpdateAnimator();
+        // ANIMAÇÃO: Atualiza as animações a cada frame
+        UpdateAnimator();
     }
 
     private void InitializePatrolPoints()
@@ -141,7 +159,7 @@ public class EnemyAI : MonoBehaviour
         foreach (GameObject point in allPoints)
         {
             float distance = Vector3.Distance(point.transform.position, myPosition);
-            
+
             if (distance <= pointSearchRadius)
             {
                 if (IsPointOnSameArea(myPosition, point.transform.position))
@@ -278,24 +296,66 @@ public class EnemyAI : MonoBehaviour
 
     /// <summary>
     /// ANIMAÇÃO: Este método atualiza os parâmetros do Animator
-    /// Para usar: Crie um parâmetro Float chamado "Speed" e um Integer chamado "State" no seu Animator
-    /// Speed: Velocidade de movimento do inimigo (0 = parado, 5+ = correndo)
-    /// State: Estado atual do inimigo (0=Idle, 1=Patrol, 2=Chase, 3=Lost)
+    /// Para usar: Crie 3 parâmetros BOOL no seu Animator:
+    /// - "isIdle": true quando parado nos pontos
+    /// - "isWalking": true quando patrulhando
+    /// - "isRunning": true quando perseguindo o player
     /// </summary>
     private void UpdateAnimator()
     {
         // ANIMAÇÃO: Verifica se o Animator existe antes de usar
-        // if (animator == null)
-        //     return;
+        if (animator == null)
+            return;
 
-        // ANIMAÇÃO: Calcula a velocidade atual do movimento (magnitude do vetor de velocidade)
-        // float speed = navMeshAgent.velocity.magnitude;
+        // ANIMAÇÃO: Calcula a velocidade atual do movimento
+        float currentSpeed = navMeshAgent.velocity.magnitude;
 
-        // ANIMAÇÃO: Envia a velocidade para o Animator controlar o blend de animações (parado/caminhando/correndo)
-        // animator.SetFloat("Speed", speed);
+        // Define um threshold para considerar que está parado
+        bool isMoving = currentSpeed > 0.1f;
 
-        // ANIMAÇÃO: Envia o estado atual como inteiro para o Animator controlar qual animação deve tocar
-        // animator.SetInteger("State", (int)currentState);
+        // ANIMAÇÃO: Reseta todos os estados para false
+        animator.SetBool("isIdle", false);
+        animator.SetBool("isWalking", false);
+        animator.SetBool("isRunning", false);
+
+        // ANIMAÇÃO: Define qual animação deve tocar baseado no estado atual
+        switch (currentState)
+        {
+            case AIState.Idle:
+                // Parado
+                animator.SetBool("isIdle", true);
+                break;
+
+            case AIState.Patrol:
+                // Patrulhando
+                if (isMoving)
+                {
+                    animator.SetBool("isWalking", true);
+                }
+                else
+                {
+                    // Parado no ponto esperando
+                    animator.SetBool("isIdle", true);
+                }
+                break;
+
+            case AIState.Chase:
+                // Perseguindo (correndo)
+                animator.SetBool("isRunning", true);
+                break;
+
+            case AIState.Lost:
+                // Voltando para patrulha (andando)
+                if (isMoving)
+                {
+                    animator.SetBool("isWalking", true);
+                }
+                else
+                {
+                    animator.SetBool("isIdle", true);
+                }
+                break;
+        }
     }
 
     public AIState GetCurrentState()
@@ -322,7 +382,7 @@ public class EnemyAI : MonoBehaviour
     public void PlayJumpScareImage()
     {
         Debug.Log("[EnemyAI] PlayJumpScareImage chamado!");
-        
+
         // Usa o JumpScareManager para garantir que sempre funcione
         JumpScareManager manager = JumpScareManager.Instance;
         if (manager != null)

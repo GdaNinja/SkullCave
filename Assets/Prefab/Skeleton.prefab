@@ -10508,6 +10508,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7070512326654921615}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4906190124697935460}
   m_SourcePrefab: {fileID: 100100000, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}
 --- !u!1 &4010528539950119526 stripped
 GameObject:
@@ -10583,12 +10586,12 @@ MonoBehaviour:
   patrolWaitTime: 2
   maxDistanceToPoint: 10
   pointSearchRadius: 50
-  chaseSpeed: 3
-  patrolSpeed: 1.5
+  chaseSpeed: 4
+  patrolSpeed: 2
   lostTargetTimeout: 3
   JumpScareSound: {fileID: 0}
   JumpScareImage: {fileID: 0}
-  jumpScareWaitTime: 5
+  jumpScareWaitTime: 3
 --- !u!54 &7070512326654921615
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -10616,6 +10619,28 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!95 &4906190124697935460
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4010528539950119526}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: efa8c15cd89039d41b5b7b94939aa70f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!4 &4387511925982535900 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: d98eb6858eeae974c8f3d85f8c16cdc8, type: 3}

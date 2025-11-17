@@ -167,7 +167,7 @@ public class PlayerStateManager : MonoBehaviour
                 isRecharging = false;
                 yield break; // cancela se tentar correr
             }
-            getPlayer.stamina += timeRecharge / 3;
+            getPlayer.stamina += timeRecharge / 2;
             if (getPlayer.stamina > getPlayer.staminaMax) getPlayer.stamina = getPlayer.staminaMax;
             StaminaBar.fillAmount = getPlayer.stamina / getPlayer.staminaMax;
             yield return new WaitForSeconds(.1f);
