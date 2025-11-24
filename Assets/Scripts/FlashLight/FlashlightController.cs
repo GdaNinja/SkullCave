@@ -102,7 +102,7 @@ public class FlashlightController : MonoBehaviour
     {
         if (lightController.enabled)
         {
-            getFlashlight.energy -= 0.25f * Time.deltaTime;
+            getFlashlight.energy -= 0.1f * Time.deltaTime;
 
             // Cor da barra
             if (getFlashlight.energy <= 30)
