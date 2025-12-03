@@ -6,8 +6,14 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/Logo.unity
+    guid: 68206991473f6724f820e736289a3b74
+  - enabled: 1
     path: Assets/Scenes/MenuInicial.unity
     guid: fa291f24efdb56c43a54dc26736da4ae
+  - enabled: 1
+    path: Assets/Scenes/CutScene.unity
+    guid: bbe9856ccd7240c46b831501fccced46
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: a4932fc641599b44f94d3003163e2cc5
@@ -17,5 +23,8 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/GameOver.unity
     guid: d420d40e3ed63824abb149282ba18d3a
+  - enabled: 1
+    path: Assets/Scenes/Cena2.unity
+    guid: ee96fdc90e6cfae42a71d42a429c93fe
   m_configObjects: {}
   m_UseUCBPForAssetBundles: 0

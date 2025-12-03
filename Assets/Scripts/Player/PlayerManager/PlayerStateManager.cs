@@ -53,6 +53,8 @@ public class PlayerStateManager : MonoBehaviour
     [SerializeField] float groundDistance = 0.4f;
     [SerializeField] LayerMask groundMask;
     [SerializeField] Color standardColor = new Color(1, 1, 1, 1);
+    [SerializeField] Color standardColorBorder = new Color(0, 0, 0, 0);
+
     [SerializeField] Color lowStaminaColor = new Color(1, 0, 0, 1);
 
     void Awake()
@@ -176,7 +178,7 @@ public class PlayerStateManager : MonoBehaviour
         {
             isBlinking = false;
             StaminaBar.color = standardColor;
-            StaminaBorder.color = standardColor;
+            StaminaBorder.color = standardColorBorder;
             tiredSound.Stop();
         }
         yield return new WaitForSeconds(timeDelay);
@@ -200,7 +202,6 @@ public class PlayerStateManager : MonoBehaviour
             float alpha = fadeOut ? Mathf.Lerp(1f, 0.3f, timeBlink) : Mathf.Lerp(0.3f, 1f, timeBlink); // Ponto de interrogação: if/else. Dois Pontos: Se a condição for verdadeira retorna antes dos dois pontos, senão só depois
 
             StaminaBar.color = new Color(StaminaBar.color.r, StaminaBar.color.g, StaminaBar.color.b, alpha);
-            StaminaBorder.color = new Color(StaminaBorder.color.r, StaminaBorder.color.g, StaminaBorder.color.b, alpha);
 
             if (timeBlink >= 1f)
             {

@@ -15,7 +15,7 @@ MonoBehaviour:
   spd: 2
   runSpd: 6
   crouchSpd: 1.5
-  runCrounchSpd: 4
+  runCrounchSpd: 2.5
   jumpForce: 1
   gravity: -9.8
   Hp: 100

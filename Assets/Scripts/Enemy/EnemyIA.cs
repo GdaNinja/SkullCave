@@ -1,4 +1,3 @@
-
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections.Generic;
@@ -34,7 +33,7 @@ public class EnemyAI : MonoBehaviour
     [Header("Configurações de Patrulha")]
     [SerializeField] private string navigationPointTag = "NavigationPoint";
     [SerializeField] private float patrolWaitTime = 2f;
-    [SerializeField] private float maxDistanceToPoint = 10f;
+    [SerializeField] private float maxDistanceToPoint = 2f; // CORRIGIDO: Era 10, agora é 2
     [SerializeField] private float pointSearchRadius = 50f;
 
     [Header("Configurações de Perseguição")]
@@ -55,6 +54,7 @@ public class EnemyAI : MonoBehaviour
     private AIState currentState = AIState.Idle;
     private AIState previousState = AIState.Idle;
     private float lostTargetTimer = 0f;
+    private bool patrolPointsInitialized = false; // NOVO: Flag para evitar reinicialização
 
     private void Start()
     {
@@ -75,7 +75,7 @@ public class EnemyAI : MonoBehaviour
                 // Tenta buscar em objetos filhos (caso o modelo 3D esteja em um filho)
                 animator = GetComponentInChildren<Animator>();
             }
-
+            
             if (animator == null)
             {
                 Debug.LogWarning("[EnemyAI] Animator não encontrado! As animações não funcionarão.");
@@ -100,7 +100,7 @@ public class EnemyAI : MonoBehaviour
 
         // Inicializa os pontos de patrulha
         InitializePatrolPoints();
-
+        
         // Inicia o estado de patrulha
         ChangeState(AIState.Patrol);
     }
@@ -145,6 +145,13 @@ public class EnemyAI : MonoBehaviour
 
     private void InitializePatrolPoints()
     {
+        // CORREÇÃO: Só inicializa uma vez para evitar mudanças na lista durante o jogo
+        if (patrolPointsInitialized && patrolPoints.Count > 0)
+        {
+            Debug.Log("[EnemyAI] Pontos de patrulha já foram inicializados.");
+            return;
+        }
+
         patrolPoints.Clear();
         GameObject[] allPoints = GameObject.FindGameObjectsWithTag(navigationPointTag);
 
@@ -156,23 +163,23 @@ public class EnemyAI : MonoBehaviour
 
         Vector3 myPosition = transform.position;
 
-        foreach (GameObject point in allPoints)
-        {
-            float distance = Vector3.Distance(point.transform.position, myPosition);
+        // MELHORIA: Ordena os pontos por distância antes de adicionar
+        List<GameObject> sortedPoints = allPoints
+            .Where(point => Vector3.Distance(point.transform.position, myPosition) <= pointSearchRadius)
+            .Where(point => IsPointOnSameArea(myPosition, point.transform.position))
+            .OrderBy(point => Vector3.Distance(point.transform.position, myPosition))
+            .ToList();
 
-            if (distance <= pointSearchRadius)
-            {
-                if (IsPointOnSameArea(myPosition, point.transform.position))
-                {
-                    patrolPoints.Add(point.transform);
-                }
-            }
+        foreach (GameObject point in sortedPoints)
+        {
+            patrolPoints.Add(point.transform);
         }
 
         if (patrolPoints.Count > 0)
         {
             currentPatrolIndex = 0;
-            Debug.Log($"[EnemyAI] {patrolPoints.Count} pontos de patrulha encontrados!");
+            patrolPointsInitialized = true;
+            Debug.Log($"[EnemyAI] {patrolPoints.Count} pontos de patrulha encontrados e ordenados!");
         }
         else
         {
@@ -201,14 +208,33 @@ public class EnemyAI : MonoBehaviour
 
         navMeshAgent.speed = patrolSpeed;
 
-        if (navMeshAgent.remainingDistance <= maxDistanceToPoint && !navMeshAgent.hasPath || navMeshAgent.velocity.sqrMagnitude == 0f)
+        // CORREÇÃO: Verifica se está perto do ponto de destino com mais precisão
+        float distanceToTarget = Vector3.Distance(transform.position, patrolPoints[currentPatrolIndex].position);
+        
+        // Se chegou no ponto (distância menor que maxDistanceToPoint)
+        if (distanceToTarget <= maxDistanceToPoint)
         {
+            // Incrementa o timer de espera
             patrolWaitTimer += Time.deltaTime;
 
+            // Se esperou tempo suficiente, vai para o próximo ponto
             if (patrolWaitTimer >= patrolWaitTime)
             {
                 patrolWaitTimer = 0f;
                 MoveToNextPatrolPoint();
+            }
+        }
+        else
+        {
+            // NOVO: Se ainda não chegou, garante que está indo para o ponto correto
+            // Isso evita que ele "perca" o destino no meio do caminho
+            if (!navMeshAgent.pathPending && navMeshAgent.remainingDistance > maxDistanceToPoint)
+            {
+                // Se o caminho foi calculado mas ele está parado/travado, recalcula
+                if (navMeshAgent.velocity.sqrMagnitude < 0.01f && navMeshAgent.hasPath)
+                {
+                    navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
+                }
             }
         }
     }
@@ -256,7 +282,13 @@ public class EnemyAI : MonoBehaviour
         if (patrolPoints.Count == 0)
             return;
 
+        // Move para o próximo índice (loop circular)
         currentPatrolIndex = (currentPatrolIndex + 1) % patrolPoints.Count;
+        
+        // MELHORIA: Log para debug
+        Debug.Log($"[EnemyAI] Indo para ponto {currentPatrolIndex + 1}/{patrolPoints.Count}: {patrolPoints[currentPatrolIndex].name}");
+        
+        // Define o destino
         navMeshAgent.SetDestination(patrolPoints[currentPatrolIndex].position);
     }
 
@@ -309,7 +341,7 @@ public class EnemyAI : MonoBehaviour
 
         // ANIMAÇÃO: Calcula a velocidade atual do movimento
         float currentSpeed = navMeshAgent.velocity.magnitude;
-
+        
         // Define um threshold para considerar que está parado
         bool isMoving = currentSpeed > 0.1f;
 
@@ -382,7 +414,7 @@ public class EnemyAI : MonoBehaviour
     public void PlayJumpScareImage()
     {
         Debug.Log("[EnemyAI] PlayJumpScareImage chamado!");
-
+        
         // Usa o JumpScareManager para garantir que sempre funcione
         JumpScareManager manager = JumpScareManager.Instance;
         if (manager != null)
@@ -463,4 +495,12 @@ public class EnemyAI : MonoBehaviour
             Gizmos.DrawLine(transform.position, playerTransform.position);
         }
     }
+    private void OnCollisionEnter(Collision collision)
+{
+    if (collision.gameObject.CompareTag("Player"))
+    {
+        Debug.Log("[EnemyAI] Colidiu com o player!");
+        PlayJumpScareImage();
+    }
+}
 }

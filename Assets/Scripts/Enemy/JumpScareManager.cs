@@ -117,30 +117,31 @@ public class JumpScareManager : MonoBehaviour
     }
 
     private IEnumerator LoadGameOverScene()
+{
+    if (showDebugMessages)
     {
-        if (showDebugMessages)
-        {
-            Debug.Log($"[JumpScareManager] Aguardando {waitTimeBeforeGameOver} segundos...");
-        }
-
-        yield return new WaitForSeconds(waitTimeBeforeGameOver);
-
-        if (showDebugMessages)
-        {
-            Debug.Log($"[JumpScareManager] Carregando cena '{gameOverSceneName}'...");
-        }
-
-        // Verifica se a cena existe no Build Settings
-        try
-        {
-            SceneManager.LoadScene(gameOverSceneName);
-        }
-        catch (System.Exception e)
-        {
-            Debug.LogError($"[JumpScareManager] Erro ao carregar cena '{gameOverSceneName}': {e.Message}");
-            Debug.LogError("[JumpScareManager] Verifique se a cena está adicionada no Build Settings!");
-        }
+        Debug.Log($"[JumpScareManager] Aguardando {waitTimeBeforeGameOver} segundos...");
     }
+
+    yield return new WaitForSeconds(waitTimeBeforeGameOver);
+
+    if (showDebugMessages)
+    {
+        Debug.Log($"[JumpScareManager] Carregando cena '{gameOverSceneName}'...");
+    }
+
+    // IMPORTANTE: NÃO reseta o checkpoint aqui!
+    // O checkpoint só é resetado quando o jogador clica em "Novo Jogo"
+    
+    try
+    {
+        SceneManager.LoadScene(gameOverSceneName);
+    }
+    catch (System.Exception e)
+    {
+        Debug.LogError($"[JumpScareManager] Erro ao carregar cena '{gameOverSceneName}': {e.Message}");
+    }
+}
 
     /// <summary>
     /// Reseta o jumpscare (útil para testes)

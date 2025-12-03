@@ -6,10 +6,9 @@ public class FlashlightController : MonoBehaviour
 {
     public FlashLightManager getFlashlight;
     PlayerStateManager player;
-    public AudioSource turnSound;
+    public AudioSource turnSound, DeathSound;
     public GameObject Bar;
     public Image energyBarFill;
-    public Image energyBarBorder;
     private Light lightController;
 
     [SerializeField] float delay; // Tempo entre ligar/desligar
@@ -75,7 +74,6 @@ public class FlashlightController : MonoBehaviour
             time += Time.deltaTime;
             float alpha = Mathf.Lerp(startAlpha, endAlpha, time / duration);
             energyBarFill.color = new Color(energyBarFill.color.r, energyBarFill.color.g, energyBarFill.color.b, alpha);
-            energyBarBorder.color = new Color(energyBarBorder.color.r, energyBarBorder.color.g, energyBarBorder.color.b, alpha);
             yield return null;
         }
 
@@ -108,7 +106,6 @@ public class FlashlightController : MonoBehaviour
             if (getFlashlight.energy <= 30)
             {
                 energyBarFill.color = lowEnergyColor;
-                energyBarBorder.color = lowEnergyColor;
 
                 // começa a piscar quando está vermelha
                 if (!isFlickering)
@@ -117,7 +114,6 @@ public class FlashlightController : MonoBehaviour
             else
             {
                 energyBarFill.color = standardColor;
-                energyBarBorder.color = standardColor;
             }
 
             yield return null;
@@ -129,6 +125,11 @@ public class FlashlightController : MonoBehaviour
                 getFlashlight.hasEnergy = false;
                 lightController.enabled = false;
                 showEnergyBar(false);
+                yield return new WaitForSeconds(0.5f);
+                DeathSound.Play();
+                yield return new WaitForSeconds(10f);
+                JumpScareManager getJumpscare = FindFirstObjectByType<JumpScareManager>();
+                getJumpscare.TriggerJumpScare();
             }
 
             energyBarFill.fillAmount = getFlashlight.energy / getFlashlight.energyMax;

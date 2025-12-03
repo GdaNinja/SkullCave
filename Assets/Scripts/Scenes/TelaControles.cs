@@ -4,15 +4,31 @@ public class TelaControles : MonoBehaviour
 {
     public GameObject telaControles;
     public bool controlesAtivos = false;
+    public Transform playerTransform;
+    public Vector3 playerPosition = new Vector3(0, 0.6f, 0);
+    
+    private bool jaChecou = false; // NOVO: evita checar múltiplas vezes
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        controlesAtivos = true;
-        telaControles.SetActive(true);
+        // CORREÇÃO: Só mostra controles se NÃO TEM checkpoint salvo
+        // Se tem checkpoint, o player já sabe jogar!
+        bool temCheckpoint = GameManager.Instance != null && GameManager.Instance.hasCheckpoint;
+        
+        if (!temCheckpoint && Vector3.Distance(playerTransform.position, playerPosition) < 1f)
+        {
+            controlesAtivos = true;
+            telaControles.SetActive(true);
+            jaChecou = true;
+        }
+        else
+        {
+            controlesAtivos = false;
+            telaControles.SetActive(false);
+            jaChecou = true;
+        }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (controlesAtivos)
@@ -28,6 +44,7 @@ public class TelaControles : MonoBehaviour
             Time.timeScale = 1f;
         }
     }
+    
     public void fecharControles()
     {
         controlesAtivos = false;
