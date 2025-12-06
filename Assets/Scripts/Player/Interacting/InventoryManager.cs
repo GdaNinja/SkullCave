@@ -39,19 +39,18 @@ public class InventoryManager : MonoBehaviour
         Debug.Log($"[InventoryManager] Cristais: {totalCrystals}");
     }
 
-    private void RestoreInventory()
+ private void RestoreInventory()
     {
-        // Só restaura se tiver checkpoint salvo
-        if (GameManager.Instance != null && GameManager.Instance.hasCheckpoint)
+        // MUDANÇA: Agora restaura SEMPRE do GameManager (com ou sem checkpoint)
+        if (GameManager.Instance != null)
         {
-            totalCrystals = GameManager.Instance.savedCrystalCount;
+            totalCrystals = GameManager.Instance.totalCrystalsCollected;
             Debug.Log($"[InventoryManager] Inventário restaurado: {totalCrystals} cristais");
         }
         else
         {
-            // Novo jogo, começa zerado
             totalCrystals = 0;
-            Debug.Log($"[InventoryManager] Novo jogo: {totalCrystals} cristais");
+            Debug.Log("[InventoryManager] GameManager não encontrado, iniciando com 0 cristais");
         }
     }
 }

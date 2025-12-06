@@ -152,7 +152,9 @@ MonoBehaviour:
   lastCheckpointRotation: {x: 0, y: 0, z: 0, w: 0}
   checkpointSceneName: 
   hasCheckpoint: 0
-  savedCrystalCount: 0
+  deactivatedObjects: []
+  collectedCrystals: []
+  totalCrystalsCollected: 0
 --- !u!4 &27944319
 Transform:
   m_ObjectHideFlags: 0
